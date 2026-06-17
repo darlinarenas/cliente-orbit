@@ -1,0 +1,1854 @@
+MASTER ORBIT ASSISTANT PRO PREMIUM
+Proyecto completo escalable - Vista cliente + administrador + backend + IA + QR + multimedia
+
+Versión: 1.0
+Objetivo comercial: producto premium vendible a empresa por USD 20.000+
+Marca del sistema: Orbit Assistant
+Enfoque: asesor digital de productos Orbit para retail, con QR por producto, ficha técnica, recomendaciones cruzadas, guía de instalación, videos, IA y panel administrador.
+
+
+============================================================
+1. VISIÓN GENERAL DEL PRODUCTO
+============================================================
+
+Orbit Assistant será una plataforma web completa donde cada producto Orbit tendrá un QR único.
+
+Cuando un cliente escanee el QR desde una tienda como Sodimac, Easy, Imperial, Construmart u otro retail, verá una experiencia móvil premium:
+
+- Producto detectado.
+- Ficha técnica simple y visual.
+- Guía de instalación.
+- Videos o video-fotos de instalación.
+- Preguntas frecuentes.
+- Productos compatibles.
+- Recomendaciones cruzadas para aumentar ventas.
+- Chat con Orbit Assistant.
+- Detalle navegable de productos recomendados.
+- Sugerencias según tipo de proyecto: jardín pequeño, mediano, grande, riego automático, césped, maceteros, huerto, etc.
+
+El administrador podrá:
+
+- Crear productos.
+- Editar productos.
+- Subir imágenes.
+- Subir videos.
+- Crear guías de instalación.
+- Asociar productos compatibles.
+- Crear recomendaciones inteligentes.
+- Generar QR por producto.
+- Ver métricas de escaneos.
+- Ver preguntas frecuentes realizadas por clientes.
+- Administrar categorías, líneas y fichas técnicas.
+- Activar o desactivar productos.
+- Administrar contenido para IA.
+- Revisar estadísticas por producto, tienda, región y fecha.
+
+
+============================================================
+2. MÓDULOS PRINCIPALES DEL SISTEMA
+============================================================
+
+2.1 MÓDULO CLIENTE QR
+------------------------------------------------------------
+
+Vista pública que ve el cliente al escanear un QR.
+
+Funciones:
+
+- Detectar producto por slug o código QR.
+- Mostrar pantalla de bienvenida con mascota Orbit Assistant.
+- Mostrar producto escaneado.
+- Mostrar ficha técnica resumida.
+- Mostrar ficha técnica completa.
+- Mostrar imágenes del producto.
+- Mostrar video de instalación.
+- Mostrar guía paso a paso.
+- Mostrar productos compatibles.
+- Mostrar productos recomendados para completar instalación.
+- Permitir entrar al detalle de cualquier producto recomendado.
+- Permitir preguntas rápidas.
+- Permitir chat libre con Orbit Assistant.
+- Mostrar advertencias o consejos:
+  - "Para este producto también podrías necesitar..."
+  - "No olvides revisar la presión de agua."
+  - "Este accesorio mejora la instalación."
+  - "Este producto funciona mejor con programador."
+- Mostrar modo proyecto:
+  - "Quiero regar césped."
+  - "Quiero automatizar el riego."
+  - "Tengo un jardín pequeño."
+  - "Tengo un jardín de 50 m²."
+  - "Quiero instalar riego por goteo."
+
+Pantallas cliente:
+
+- /p/:slug
+- /p/:slug/ficha
+- /p/:slug/instalacion
+- /p/:slug/compatibles
+- /p/:slug/chat
+- /producto/:id
+- /recomendados/:slug
+- /proyecto
+
+
+2.2 MÓDULO PRODUCTOS
+------------------------------------------------------------
+
+Administra todo el catálogo de productos Orbit.
+
+Cada producto debe tener:
+
+- ID interno.
+- SKU.
+- Slug público.
+- Nombre.
+- Nombre corto.
+- Categoría.
+- Línea.
+- Descripción corta.
+- Descripción larga.
+- Imagen principal.
+- Galería de imágenes.
+- Video de instalación.
+- Video corto de uso.
+- PDF o manual técnico.
+- Ficha técnica.
+- Preguntas frecuentes.
+- Estado: activo/inactivo.
+- Visibilidad: público/oculto.
+- Etiquetas:
+  - Césped.
+  - Jardín.
+  - Goteo.
+  - Programador.
+  - Aspersor.
+  - Boquilla.
+  - Conector.
+  - Manguera.
+  - Instalación fácil.
+  - Recomendado.
+- Nivel de instalación:
+  - Básico.
+  - Medio.
+  - Avanzado.
+- Producto destacado: sí/no.
+- Fecha de creación.
+- Fecha de actualización.
+
+
+2.3 MÓDULO FICHA TÉCNICA
+------------------------------------------------------------
+
+Cada producto debe tener campos técnicos flexibles.
+
+Ejemplo para aspersor:
+
+- Alcance.
+- Presión recomendada.
+- Caudal.
+- Radio de cobertura.
+- Patrón de riego.
+- Tipo de conexión.
+- Material.
+- Uso recomendado.
+- Compatibilidad.
+- Tipo de instalación.
+- Garantía.
+- Recomendaciones de uso.
+
+Ejemplo para programador:
+
+- Cantidad de estaciones.
+- Alimentación.
+- Tipo de batería.
+- Programas disponibles.
+- Frecuencia de riego.
+- Duración de riego.
+- Sensor de lluvia compatible.
+- Uso interior/exterior.
+- Conexión.
+- Garantía.
+
+Ejemplo para boquilla:
+
+- Ángulo.
+- Radio.
+- Presión recomendada.
+- Compatibilidad con aspersores.
+- Tipo de patrón.
+- Uso recomendado.
+
+
+2.4 MÓDULO RECOMENDACIONES / VENTA CRUZADA
+------------------------------------------------------------
+
+Este módulo es clave para justificar el valor comercial del sistema.
+
+Objetivo:
+
+No solo mostrar el producto escaneado, sino sugerir productos complementarios para aumentar el ticket promedio.
+
+Ejemplo:
+
+Si el cliente escanea un aspersor:
+
+- Recomendar boquilla compatible.
+- Recomendar conector.
+- Recomendar tubería.
+- Recomendar programador.
+- Recomendar filtro.
+- Recomendar llave de paso.
+
+Si el cliente escanea una boquilla:
+
+- Recomendar aspersores compatibles.
+- Recomendar programadores.
+- Recomendar conectores.
+- Recomendar tubería.
+- Recomendar kits.
+
+Si el cliente escanea un programador:
+
+- Recomendar aspersores.
+- Recomendar electroválvulas.
+- Recomendar sensor de lluvia.
+- Recomendar filtros.
+- Recomendar conectores.
+- Recomendar tubería.
+
+Tipos de recomendación:
+
+- Necesario.
+- Recomendado.
+- Opcional.
+- Premium.
+- Compatible.
+- Frecuentemente comprado juntos.
+- Para instalación completa.
+- Para automatizar.
+- Para ahorrar agua.
+- Para mejorar cobertura.
+
+Cada recomendación debe permitir:
+
+- Ver nombre.
+- Ver imagen.
+- Ver descripción corta.
+- Ver motivo de recomendación.
+- Ver etiqueta.
+- Botón "Ver detalle".
+- Botón "Consultar con Orbit Assistant".
+- Botón "Ver instalación completa".
+
+Importante:
+
+Al hacer clic sobre un producto recomendado, el cliente debe ir al detalle de ese producto sin romper la experiencia.
+
+
+2.5 MÓDULO DETALLE DE PRODUCTO RECOMENDADO
+------------------------------------------------------------
+
+Cuando el cliente haga clic en un producto recomendado, se abre una vista de detalle.
+
+Ejemplo:
+
+Cliente escanea aspersor.
+Sistema recomienda programador.
+Cliente toca "Programador digital Orbit".
+Se abre:
+
+- Nombre del programador.
+- Imagen.
+- Descripción.
+- Para qué sirve.
+- Por qué se recomienda con el aspersor.
+- Ficha técnica.
+- Compatibilidades.
+- Video.
+- Botón volver al producto original.
+- Botón consultar al asistente.
+
+Ruta sugerida:
+
+/producto/:slug
+/producto/:slug?from=aspersor-popup-orbit
+
+
+2.6 MÓDULO GUÍA DE INSTALACIÓN
+------------------------------------------------------------
+
+Cada producto puede tener una guía visual de instalación.
+
+Debe permitir:
+
+- Pasos con título.
+- Descripción corta.
+- Imagen por paso.
+- Video por paso opcional.
+- Video principal.
+- Modo video-fotos.
+- Recomendaciones.
+- Errores comunes.
+- Herramientas necesarias.
+- Accesorios necesarios.
+- Botón para preguntar al asistente.
+
+Tipos de contenido:
+
+- Video MP4.
+- Link YouTube/Vimeo.
+- Secuencia de imágenes.
+- Carrusel paso a paso.
+- PDF descargable.
+- Mini tutorial visual.
+
+Ejemplo de pasos:
+
+1. Medir zona de riego.
+2. Revisar presión.
+3. Preparar tubería.
+4. Instalar conector.
+5. Colocar aspersor.
+6. Ajustar patrón.
+7. Probar cobertura.
+8. Automatizar con programador.
+
+
+2.7 MÓDULO CHAT ORBIT ASSISTANT
+------------------------------------------------------------
+
+El chat debe ser útil para cliente final, no técnico.
+
+Funciones:
+
+- Preguntas rápidas.
+- Pregunta libre.
+- Respuestas simuladas al inicio.
+- Luego integración con IA real.
+- Contexto del producto escaneado.
+- Contexto de productos recomendados.
+- Contexto de ficha técnica.
+- Respuestas comerciales inteligentes.
+- Recomendaciones cruzadas.
+- Sugerencia de instalación completa.
+- Lenguaje simple.
+
+Ejemplos de preguntas:
+
+- ¿Sirve para césped?
+- ¿Qué presión necesita?
+- ¿Qué necesito para instalarlo?
+- ¿Necesito programador?
+- Tengo un jardín de 50 m², ¿qué compro?
+- ¿Este producto sirve con una boquilla?
+- ¿Cuál es compatible?
+- ¿Cómo se instala?
+- ¿Cuántos necesito para mi jardín?
+- ¿Qué producto me falta?
+
+El asistente debe responder:
+
+- Claro.
+- Corto.
+- Comercial.
+- Con recomendaciones.
+- Sin inventar datos técnicos que no existan.
+- Si no sabe, debe decir que necesita revisar ficha o recomendar consultar a un especialista.
+
+
+2.8 MÓDULO MODO PROYECTO
+------------------------------------------------------------
+
+Este módulo aumenta mucho el valor del producto.
+
+El cliente no solo ve un producto, también puede decir qué quiere lograr.
+
+Opciones:
+
+- Regar jardín pequeño.
+- Regar jardín mediano.
+- Regar jardín grande.
+- Regar césped.
+- Regar maceteros.
+- Instalar riego por goteo.
+- Automatizar riego.
+- Ahorrar agua.
+- Reemplazar producto dañado.
+- Armar kit completo.
+
+Resultado:
+
+El sistema muestra una solución recomendada:
+
+Ejemplo:
+
+"Para jardín mediano recomendamos:"
+
+- 4 aspersores.
+- 4 boquillas.
+- 1 programador.
+- 20 metros de tubería.
+- Conectores.
+- Filtro.
+- Llave de paso.
+
+Debe mostrar:
+
+- Productos principales.
+- Accesorios necesarios.
+- Opcionales premium.
+- Nivel de dificultad.
+- Consejos.
+- Botón para consultar IA.
+
+
+2.9 MÓDULO QR
+------------------------------------------------------------
+
+Cada producto tendrá un QR único.
+
+Funciones:
+
+- Generar QR desde el administrador.
+- QR por producto.
+- QR por sucursal opcional.
+- QR por campaña opcional.
+- Descargar QR en PNG.
+- Descargar QR en SVG.
+- Descargar QR en PDF.
+- Asignar QR a producto.
+- Activar/desactivar QR.
+- Registrar escaneos.
+- Redirigir al producto correcto.
+
+Tipos de QR:
+
+- QR general por producto.
+- QR por producto + tienda.
+- QR por producto + región.
+- QR por campaña.
+- QR temporal para prueba.
+- QR permanente para empaque.
+
+Ejemplo de ruta:
+
+https://orbitassistant.cl/q/ASP-POP-001
+https://orbitassistant.cl/q/ASP-POP-001?sucursal=sodimac-maipu
+https://orbitassistant.cl/p/aspersor-popup-orbit
+
+
+2.10 MÓDULO ANALÍTICAS
+------------------------------------------------------------
+
+Panel para medir resultados.
+
+Métricas:
+
+- Escaneos totales.
+- Escaneos por producto.
+- Escaneos por categoría.
+- Escaneos por día.
+- Escaneos por tienda.
+- Escaneos por región.
+- Productos más consultados.
+- Productos más recomendados.
+- Productos más clickeados.
+- Preguntas más frecuentes.
+- Recomendaciones más vistas.
+- Conversaciones iniciadas.
+- Clicks en productos compatibles.
+- Tiempo promedio en pantalla.
+- Tasa de interacción.
+- Modo proyecto más usado.
+- Guías de instalación más vistas.
+
+Importante:
+
+Si se usa geolocalización, debe ser opcional y no invasiva.
+También se puede medir por QR asignado a tienda/sucursal.
+
+
+2.11 MÓDULO ADMINISTRADOR
+------------------------------------------------------------
+
+Panel privado para gestión completa.
+
+Roles:
+
+- Super Admin.
+- Administrador Orbit.
+- Editor de productos.
+- Analista.
+- Solo lectura.
+
+Pantallas administrador:
+
+- Login admin.
+- Dashboard principal.
+- Productos.
+- Crear producto.
+- Editar producto.
+- Categorías.
+- Líneas.
+- Recomendaciones.
+- Compatibilidades.
+- Guías de instalación.
+- Multimedia.
+- QR.
+- Escaneos.
+- Preguntas del asistente.
+- Base de conocimiento IA.
+- Usuarios admin.
+- Configuración del sistema.
+
+Funciones:
+
+- Crear producto.
+- Editar producto.
+- Eliminar o desactivar producto.
+- Subir imagen.
+- Subir video.
+- Asociar productos compatibles.
+- Asociar productos recomendados.
+- Crear preguntas frecuentes.
+- Crear guía de instalación.
+- Generar QR.
+- Descargar QR.
+- Ver métricas.
+- Ver preguntas reales del cliente.
+- Exportar datos CSV.
+- Activar o desactivar IA por producto.
+- Configurar prompt base de IA.
+- Configurar marca, colores y textos.
+
+
+2.12 MÓDULO MULTIMEDIA
+------------------------------------------------------------
+
+Gestión de archivos.
+
+Tipos:
+
+- Imágenes de producto.
+- Imagen principal.
+- Galería.
+- Imágenes para pasos de instalación.
+- Videos MP4.
+- Videos externos YouTube/Vimeo.
+- PDF manual técnico.
+- Iconos.
+- Mascota.
+- QRs generados.
+
+Debe permitir:
+
+- Subir archivo.
+- Ver archivo.
+- Asociar archivo a producto.
+- Asociar archivo a paso de instalación.
+- Eliminar archivo.
+- Reemplazar archivo.
+- Optimización de imágenes.
+- Validar tamaño máximo.
+
+
+2.13 MÓDULO IA / BASE DE CONOCIMIENTO
+------------------------------------------------------------
+
+Debe manejar IA de forma controlada.
+
+No se debe dejar que la IA responda sin contexto.
+
+La IA debe recibir:
+
+- Producto escaneado.
+- Ficha técnica.
+- Categoría.
+- Recomendaciones.
+- Compatibilidades.
+- Guía de instalación.
+- Preguntas frecuentes.
+- Reglas comerciales.
+- Restricciones.
+
+Reglas:
+
+- No inventar datos técnicos.
+- No hablar de precios si la empresa no lo permite.
+- No mencionar competidores.
+- Recomendar productos Orbit.
+- Ser breve.
+- Explicar fácil.
+- Preguntar si falta información.
+- Sugerir accesorios compatibles.
+- Aclarar si se requiere instalador cuando aplique.
+
+Fase inicial:
+
+- Chat simulado con respuestas por reglas.
+
+Fase profesional:
+
+- OpenAI API.
+- Endpoint backend /api/assistant/ask.
+- Contexto desde base de datos.
+- Registro de preguntas.
+- Filtro de seguridad.
+- Historial de conversación por sesión.
+
+
+============================================================
+3. ESTRUCTURA DE CARPETAS DEL PROYECTO
+============================================================
+
+Nombre del proyecto:
+
+orbit-assistant/
+
+Estructura recomendada:
+
+orbit-assistant/
+│
+├── README.md
+├── MASTER_ORBIT_ASSISTANT.txt
+├── package.json
+├── .gitignore
+├── .env.example
+│
+├── frontend/
+│   │
+│   ├── package.json
+│   ├── index.html
+│   ├── vite.config.js
+│   │
+│   ├── public/
+│   │   ├── favicon.ico
+│   │   ├── manifest.json
+│   │   ├── robots.txt
+│   │   └── assets/
+│   │       ├── logo/
+│   │       │   ├── orbit-logo.png
+│   │       │   └── orbit-assistant-logo.png
+│   │       │
+│   │       ├── mascot/
+│   │       │   ├── orbito.png
+│   │       │   ├── orbito-chat.png
+│   │       │   └── orbito-welcome.png
+│   │       │
+│   │       ├── placeholders/
+│   │       │   ├── product-placeholder.png
+│   │       │   ├── video-placeholder.png
+│   │       │   └── qr-placeholder.png
+│   │       │
+│   │       └── icons/
+│   │           ├── water.svg
+│   │           ├── pressure.svg
+│   │           ├── coverage.svg
+│   │           ├── install.svg
+│   │           ├── compatible.svg
+│   │           └── chat.svg
+│   │
+│   └── src/
+│       │
+│       ├── main.js
+│       ├── App.jsx
+│       ├── config/
+│       │   ├── api.js
+│       │   └── routes.js
+│       │
+│       ├── styles/
+│       │   ├── base.css
+│       │   ├── variables.css
+│       │   ├── client.css
+│       │   ├── admin.css
+│       │   ├── chat.css
+│       │   └── responsive.css
+│       │
+│       ├── client/
+│       │   ├── pages/
+│       │   │   ├── QRRedirectPage.jsx
+│       │   │   ├── ProductLandingPage.jsx
+│       │   │   ├── ProductDetailPage.jsx
+│       │   │   ├── ProductSpecsPage.jsx
+│       │   │   ├── InstallationGuidePage.jsx
+│       │   │   ├── CompatibleProductsPage.jsx
+│       │   │   ├── RecommendedBundlePage.jsx
+│       │   │   ├── ProjectModePage.jsx
+│       │   │   └── AssistantChatPage.jsx
+│       │   │
+│       │   ├── components/
+│       │   │   ├── ClientLayout.jsx
+│       │   │   ├── ClientHeader.jsx
+│       │   │   ├── BottomNav.jsx
+│       │   │   ├── MascotBubble.jsx
+│       │   │   ├── ProductHero.jsx
+│       │   │   ├── ProductSpecCards.jsx
+│       │   │   ├── TechnicalSheet.jsx
+│       │   │   ├── InstallationSteps.jsx
+│       │   │   ├── InstallationVideo.jsx
+│       │   │   ├── ProductCard.jsx
+│       │   │   ├── CompatibleProductCard.jsx
+│       │   │   ├── RecommendedBundle.jsx
+│       │   │   ├── CrossSellSection.jsx
+│       │   │   ├── ProjectModeSelector.jsx
+│       │   │   ├── FAQAccordion.jsx
+│       │   │   ├── AssistantChat.jsx
+│       │   │   ├── QuickQuestions.jsx
+│       │   │   └── LoadingScreen.jsx
+│       │   │
+│       │   └── services/
+│       │       ├── productService.js
+│       │       ├── qrService.js
+│       │       ├── scanService.js
+│       │       ├── assistantService.js
+│       │       └── recommendationService.js
+│       │
+│       ├── admin/
+│       │   ├── pages/
+│       │   │   ├── AdminLoginPage.jsx
+│       │   │   ├── AdminDashboardPage.jsx
+│       │   │   ├── ProductsPage.jsx
+│       │   │   ├── ProductCreatePage.jsx
+│       │   │   ├── ProductEditPage.jsx
+│       │   │   ├── CategoriesPage.jsx
+│       │   │   ├── LinesPage.jsx
+│       │   │   ├── RecommendationsPage.jsx
+│       │   │   ├── CompatibilityPage.jsx
+│       │   │   ├── InstallationGuidesPage.jsx
+│       │   │   ├── MediaLibraryPage.jsx
+│       │   │   ├── QRManagerPage.jsx
+│       │   │   ├── AnalyticsPage.jsx
+│       │   │   ├── AssistantQuestionsPage.jsx
+│       │   │   ├── KnowledgeBasePage.jsx
+│       │   │   ├── AdminUsersPage.jsx
+│       │   │   └── SettingsPage.jsx
+│       │   │
+│       │   ├── components/
+│       │   │   ├── AdminLayout.jsx
+│       │   │   ├── AdminSidebar.jsx
+│       │   │   ├── AdminTopbar.jsx
+│       │   │   ├── StatCard.jsx
+│       │   │   ├── ProductTable.jsx
+│       │   │   ├── ProductForm.jsx
+│       │   │   ├── CategoryForm.jsx
+│       │   │   ├── RecommendationForm.jsx
+│       │   │   ├── CompatibilityPicker.jsx
+│       │   │   ├── TechnicalFieldsEditor.jsx
+│       │   │   ├── InstallationStepEditor.jsx
+│       │   │   ├── MediaUploader.jsx
+│       │   │   ├── QRPreview.jsx
+│       │   │   ├── QRDownloadButtons.jsx
+│       │   │   ├── AnalyticsChart.jsx
+│       │   │   ├── QuestionsTable.jsx
+│       │   │   └── ConfirmModal.jsx
+│       │   │
+│       │   └── services/
+│       │       ├── adminAuthService.js
+│       │       ├── adminProductService.js
+│       │       ├── adminMediaService.js
+│       │       ├── adminQRService.js
+│       │       ├── adminAnalyticsService.js
+│       │       └── adminAssistantService.js
+│       │
+│       ├── shared/
+│       │   ├── components/
+│       │   │   ├── Button.jsx
+│       │   │   ├── Input.jsx
+│       │   │   ├── Select.jsx
+│       │   │   ├── Textarea.jsx
+│       │   │   ├── Badge.jsx
+│       │   │   ├── Card.jsx
+│       │   │   ├── Modal.jsx
+│       │   │   ├── Toast.jsx
+│       │   │   └── Spinner.jsx
+│       │   │
+│       │   ├── hooks/
+│       │   │   ├── useFetch.js
+│       │   │   ├── useAuth.js
+│       │   │   ├── useProduct.js
+│       │   │   └── useToast.js
+│       │   │
+│       │   └── utils/
+│       │       ├── formatDate.js
+│       │       ├── slugify.js
+│       │       ├── validateForms.js
+│       │       └── storage.js
+│
+├── backend/
+│   │
+│   ├── package.json
+│   ├── server.js
+│   ├── app.js
+│   ├── .env.example
+│   │
+│   ├── config/
+│   │   ├── database.js
+│   │   ├── cors.js
+│   │   ├── multer.js
+│   │   ├── openai.js
+│   │   └── storage.js
+│   │
+│   ├── db/
+│   │   ├── schema.sql
+│   │   ├── seed.sql
+│   │   ├── migrations/
+│   │   │   ├── 001_create_admin_users.sql
+│   │   │   ├── 002_create_categories.sql
+│   │   │   ├── 003_create_products.sql
+│   │   │   ├── 004_create_product_media.sql
+│   │   │   ├── 005_create_installation_guides.sql
+│   │   │   ├── 006_create_recommendations.sql
+│   │   │   ├── 007_create_qr_codes.sql
+│   │   │   ├── 008_create_scan_events.sql
+│   │   │   ├── 009_create_assistant_questions.sql
+│   │   │   └── 010_create_knowledge_base.sql
+│   │   │
+│   │   └── seeds/
+│   │       ├── categories.seed.sql
+│   │       ├── products.seed.sql
+│   │       ├── recommendations.seed.sql
+│   │       └── admin.seed.sql
+│   │
+│   ├── routes/
+│   │   ├── public.routes.js
+│   │   ├── qr.routes.js
+│   │   ├── products.routes.js
+│   │   ├── recommendations.routes.js
+│   │   ├── assistant.routes.js
+│   │   ├── scans.routes.js
+│   │   ├── media.routes.js
+│   │   ├── admin.auth.routes.js
+│   │   ├── admin.products.routes.js
+│   │   ├── admin.categories.routes.js
+│   │   ├── admin.recommendations.routes.js
+│   │   ├── admin.qr.routes.js
+│   │   ├── admin.analytics.routes.js
+│   │   ├── admin.media.routes.js
+│   │   └── admin.settings.routes.js
+│   │
+│   ├── controllers/
+│   │   ├── public.controller.js
+│   │   ├── qr.controller.js
+│   │   ├── products.controller.js
+│   │   ├── recommendations.controller.js
+│   │   ├── assistant.controller.js
+│   │   ├── scans.controller.js
+│   │   ├── media.controller.js
+│   │   ├── admin.auth.controller.js
+│   │   ├── admin.products.controller.js
+│   │   ├── admin.categories.controller.js
+│   │   ├── admin.recommendations.controller.js
+│   │   ├── admin.qr.controller.js
+│   │   ├── admin.analytics.controller.js
+│   │   └── admin.settings.controller.js
+│   │
+│   ├── services/
+│   │   ├── product.service.js
+│   │   ├── qr.service.js
+│   │   ├── recommendation.service.js
+│   │   ├── assistant.service.js
+│   │   ├── scan.service.js
+│   │   ├── media.service.js
+│   │   ├── analytics.service.js
+│   │   ├── knowledge.service.js
+│   │   ├── auth.service.js
+│   │   └── storage.service.js
+│   │
+│   ├── repositories/
+│   │   ├── product.repository.js
+│   │   ├── category.repository.js
+│   │   ├── recommendation.repository.js
+│   │   ├── qr.repository.js
+│   │   ├── scan.repository.js
+│   │   ├── media.repository.js
+│   │   ├── assistant.repository.js
+│   │   ├── admin.repository.js
+│   │   └── settings.repository.js
+│   │
+│   ├── middleware/
+│   │   ├── auth.middleware.js
+│   │   ├── admin.middleware.js
+│   │   ├── error.middleware.js
+│   │   ├── validate.middleware.js
+│   │   ├── upload.middleware.js
+│   │   └── rateLimit.middleware.js
+│   │
+│   ├── validators/
+│   │   ├── product.validator.js
+│   │   ├── category.validator.js
+│   │   ├── recommendation.validator.js
+│   │   ├── qr.validator.js
+│   │   ├── assistant.validator.js
+│   │   └── admin.validator.js
+│   │
+│   ├── utils/
+│   │   ├── slugify.js
+│   │   ├── generateQR.js
+│   │   ├── generateSKU.js
+│   │   ├── response.js
+│   │   ├── errors.js
+│   │   ├── fileHelpers.js
+│   │   └── promptBuilder.js
+│   │
+│   └── uploads/
+│       ├── products/
+│       ├── installation/
+│       ├── videos/
+│       ├── manuals/
+│       ├── qrs/
+│       └── mascot/
+│
+├── docs/
+│   ├── arquitectura.md
+│   ├── endpoints.md
+│   ├── flujo-cliente.md
+│   ├── flujo-admin.md
+│   ├── modelo-datos.md
+│   ├── prompts-ia.md
+│   ├── reglas-comerciales.md
+│   └── roadmap.md
+│
+└── design/
+    ├── wireframes/
+    ├── screenshots/
+    ├── brand/
+    └── mockups/
+
+
+============================================================
+4. BASE DE DATOS POSTGRESQL - TABLAS PRINCIPALES
+============================================================
+
+4.1 admin_users
+------------------------------------------------------------
+
+Campos:
+
+- id
+- name
+- email
+- password_hash
+- role
+- is_active
+- created_at
+- updated_at
+
+
+4.2 categories
+------------------------------------------------------------
+
+Campos:
+
+- id
+- name
+- slug
+- description
+- icon
+- is_active
+- created_at
+- updated_at
+
+Ejemplos:
+
+- Aspersores.
+- Boquillas.
+- Programadores.
+- Conectores.
+- Tuberías.
+- Riego por goteo.
+- Filtros.
+- Accesorios.
+
+
+4.3 product_lines
+------------------------------------------------------------
+
+Campos:
+
+- id
+- name
+- slug
+- description
+- is_active
+- created_at
+- updated_at
+
+Ejemplos:
+
+- Riego residencial.
+- Riego automático.
+- Jardín.
+- Goteo.
+- Accesorios.
+
+
+4.4 products
+------------------------------------------------------------
+
+Campos:
+
+- id
+- sku
+- slug
+- name
+- short_name
+- category_id
+- line_id
+- short_description
+- long_description
+- main_image_url
+- manual_pdf_url
+- installation_video_url
+- difficulty_level
+- usage_type
+- is_featured
+- is_active
+- ai_enabled
+- created_at
+- updated_at
+
+
+4.5 product_specs
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- spec_key
+- spec_label
+- spec_value
+- spec_unit
+- sort_order
+- created_at
+
+
+4.6 product_media
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- media_type
+- title
+- url
+- filename
+- mime_type
+- sort_order
+- created_at
+
+media_type:
+
+- image
+- video
+- pdf
+- icon
+
+
+4.7 installation_guides
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- title
+- description
+- main_video_url
+- is_active
+- created_at
+- updated_at
+
+
+4.8 installation_steps
+------------------------------------------------------------
+
+Campos:
+
+- id
+- guide_id
+- step_number
+- title
+- description
+- image_url
+- video_url
+- sort_order
+- created_at
+
+
+4.9 product_recommendations
+------------------------------------------------------------
+
+Campos:
+
+- id
+- source_product_id
+- recommended_product_id
+- recommendation_type
+- reason
+- priority
+- is_active
+- created_at
+- updated_at
+
+recommendation_type:
+
+- necesario
+- recomendado
+- opcional
+- premium
+- compatible
+- frecuente
+- instalacion_completa
+- automatizacion
+
+
+4.10 product_compatibilities
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- compatible_product_id
+- compatibility_note
+- is_active
+- created_at
+
+
+4.11 qr_codes
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- qr_code
+- qr_url
+- qr_image_url
+- store_name
+- store_branch
+- region
+- campaign_name
+- is_active
+- created_at
+- updated_at
+
+
+4.12 scan_events
+------------------------------------------------------------
+
+Campos:
+
+- id
+- qr_id
+- product_id
+- session_id
+- user_agent
+- device_type
+- browser
+- country
+- region
+- city
+- store_branch
+- referrer
+- scanned_at
+
+
+4.13 assistant_questions
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- session_id
+- question
+- answer
+- source
+- created_at
+
+source:
+
+- simulated
+- openai
+- rules
+- admin
+
+
+4.14 knowledge_base
+------------------------------------------------------------
+
+Campos:
+
+- id
+- product_id
+- category_id
+- title
+- content
+- tags
+- is_active
+- created_at
+- updated_at
+
+
+4.15 settings
+------------------------------------------------------------
+
+Campos:
+
+- id
+- key
+- value
+- description
+- updated_at
+
+
+============================================================
+5. RUTAS FRONTEND
+============================================================
+
+Rutas públicas cliente:
+
+- /
+- /q/:qrCode
+- /p/:slug
+- /producto/:slug
+- /producto/:slug/ficha
+- /producto/:slug/instalacion
+- /producto/:slug/compatibles
+- /producto/:slug/recomendados
+- /producto/:slug/chat
+- /proyecto
+- /proyecto/:type
+
+Rutas administrador:
+
+- /admin/login
+- /admin/dashboard
+- /admin/productos
+- /admin/productos/nuevo
+- /admin/productos/:id/editar
+- /admin/categorias
+- /admin/lineas
+- /admin/recomendaciones
+- /admin/compatibilidades
+- /admin/guias
+- /admin/multimedia
+- /admin/qrs
+- /admin/analiticas
+- /admin/preguntas
+- /admin/base-conocimiento
+- /admin/usuarios
+- /admin/configuracion
+
+
+============================================================
+6. ENDPOINTS BACKEND
+============================================================
+
+6.1 Públicos
+------------------------------------------------------------
+
+GET /api/public/product/:slug
+Obtiene detalle público de producto.
+
+GET /api/public/product/:slug/recommendations
+Obtiene recomendados del producto.
+
+GET /api/public/product/:slug/compatibles
+Obtiene compatibles.
+
+GET /api/public/product/:slug/installation
+Obtiene guía de instalación.
+
+GET /api/public/product/:slug/media
+Obtiene multimedia.
+
+GET /api/public/categories
+Obtiene categorías activas.
+
+
+6.2 QR
+------------------------------------------------------------
+
+GET /api/qr/:qrCode
+Resuelve QR y redirige o devuelve producto.
+
+POST /api/qr/:qrCode/scan
+Registra escaneo.
+
+GET /api/qr/product/:productId
+Obtiene QRs del producto.
+
+
+6.3 Assistant
+------------------------------------------------------------
+
+POST /api/assistant/ask
+Pregunta al asistente.
+
+Body:
+
+{
+  "productSlug": "aspersor-popup-orbit",
+  "question": "¿Qué necesito para instalarlo?",
+  "sessionId": "abc123"
+}
+
+Respuesta:
+
+{
+  "answer": "Para instalarlo necesitas...",
+  "recommendations": [],
+  "source": "openai"
+}
+
+
+6.4 Admin Auth
+------------------------------------------------------------
+
+POST /api/admin/auth/login
+POST /api/admin/auth/logout
+GET /api/admin/auth/me
+
+
+6.5 Admin Productos
+------------------------------------------------------------
+
+GET /api/admin/products
+GET /api/admin/products/:id
+POST /api/admin/products
+PUT /api/admin/products/:id
+DELETE /api/admin/products/:id
+PATCH /api/admin/products/:id/status
+
+
+6.6 Admin Categorías
+------------------------------------------------------------
+
+GET /api/admin/categories
+POST /api/admin/categories
+PUT /api/admin/categories/:id
+DELETE /api/admin/categories/:id
+
+
+6.7 Admin Recomendaciones
+------------------------------------------------------------
+
+GET /api/admin/recommendations/product/:productId
+POST /api/admin/recommendations
+PUT /api/admin/recommendations/:id
+DELETE /api/admin/recommendations/:id
+
+
+6.8 Admin Compatibilidades
+------------------------------------------------------------
+
+GET /api/admin/compatibilities/product/:productId
+POST /api/admin/compatibilities
+DELETE /api/admin/compatibilities/:id
+
+
+6.9 Admin Guías
+------------------------------------------------------------
+
+GET /api/admin/installation/product/:productId
+POST /api/admin/installation
+PUT /api/admin/installation/:id
+POST /api/admin/installation/:guideId/steps
+PUT /api/admin/installation/steps/:id
+DELETE /api/admin/installation/steps/:id
+
+
+6.10 Admin Multimedia
+------------------------------------------------------------
+
+POST /api/admin/media/upload
+GET /api/admin/media
+DELETE /api/admin/media/:id
+
+
+6.11 Admin QR
+------------------------------------------------------------
+
+POST /api/admin/qr/generate
+GET /api/admin/qr
+GET /api/admin/qr/product/:productId
+PATCH /api/admin/qr/:id/status
+DELETE /api/admin/qr/:id
+
+
+6.12 Admin Analíticas
+------------------------------------------------------------
+
+GET /api/admin/analytics/overview
+GET /api/admin/analytics/scans
+GET /api/admin/analytics/products
+GET /api/admin/analytics/questions
+GET /api/admin/analytics/recommendations
+
+
+============================================================
+7. FLUJO COMPLETO DEL CLIENTE
+============================================================
+
+Flujo principal:
+
+1. Cliente ve producto en tienda.
+2. Cliente escanea QR.
+3. Sistema abre /q/:qrCode.
+4. Backend registra escaneo.
+5. Backend resuelve producto.
+6. Frontend muestra landing del producto.
+7. Cliente ve:
+   - Producto.
+   - Ficha rápida.
+   - Beneficios.
+   - Botón "Completar instalación".
+   - Botón "Preguntar a Orbit Assistant".
+8. Cliente entra a recomendados.
+9. Sistema muestra accesorios necesarios.
+10. Cliente toca un producto recomendado.
+11. Sistema abre detalle del producto recomendado.
+12. Cliente puede volver al producto original.
+13. Cliente puede ver guía de instalación.
+14. Cliente puede reproducir video.
+15. Cliente puede preguntar al asistente.
+16. Chat responde usando contexto del producto.
+17. Se registra la pregunta en el backend.
+18. Admin luego puede ver métricas y preguntas frecuentes.
+
+
+============================================================
+8. FLUJO COMPLETO DEL ADMINISTRADOR
+============================================================
+
+1. Admin entra a /admin/login.
+2. Inicia sesión.
+3. Ve dashboard.
+4. Crea categoría si no existe.
+5. Crea producto.
+6. Sube imagen principal.
+7. Sube galería.
+8. Llena ficha técnica.
+9. Agrega manual PDF.
+10. Agrega video de instalación.
+11. Crea pasos de instalación.
+12. Asocia productos compatibles.
+13. Asocia productos recomendados.
+14. Define tipo de recomendación:
+    - Necesario.
+    - Recomendado.
+    - Premium.
+    - Opcional.
+15. Genera QR.
+16. Descarga QR.
+17. Activa producto.
+18. Revisa vista pública.
+19. Revisa escaneos.
+20. Revisa preguntas.
+21. Ajusta recomendaciones.
+
+
+============================================================
+9. REGLAS DE NEGOCIO
+============================================================
+
+Reglas importantes:
+
+- Un producto puede tener muchos productos recomendados.
+- Un producto puede ser recomendado por muchos productos.
+- Un producto puede tener muchos QR.
+- Un QR puede tener información de tienda o campaña.
+- Un producto puede tener muchas imágenes.
+- Un producto puede tener un video principal.
+- Un producto puede tener muchos pasos de instalación.
+- Una pregunta siempre debe guardarse.
+- Un producto inactivo no debe aparecer públicamente.
+- Un QR inactivo debe mostrar mensaje de QR no disponible.
+- El cliente no debe ver precios si Orbit no lo autoriza.
+- La IA no debe inventar ficha técnica.
+- La IA debe sugerir accesorios compatibles.
+- Las recomendaciones deben poder ordenarse por prioridad.
+- El administrador debe poder cambiar todo sin tocar código.
+
+
+============================================================
+10. ESCALABILIDAD
+============================================================
+
+El sistema debe estar preparado para:
+
+- 20 productos demo.
+- 200 productos iniciales.
+- 2.000 productos reales.
+- Varias categorías.
+- Varias tiendas.
+- Varias regiones.
+- Miles de escaneos.
+- Muchas preguntas de IA.
+- Videos e imágenes por producto.
+- Múltiples administradores.
+- Nuevas marcas en el futuro si Vexora vende el sistema a otros clientes.
+
+Recomendaciones técnicas:
+
+- Frontend: React + Vite.
+- Backend: Node.js + Express.
+- Base de datos: PostgreSQL.
+- Hosting frontend: Vercel.
+- Hosting backend: Render.
+- Base de datos: Supabase PostgreSQL.
+- Archivos: Cloudinary, Supabase Storage o S3.
+- IA: OpenAI API.
+- QR: librería qrcode.
+- Auth: JWT.
+- Validaciones: Zod o Joi.
+- Uploads: Multer.
+- Seguridad: Helmet, CORS, Rate Limit.
+
+
+============================================================
+11. VARIABLES DE ENTORNO
+============================================================
+
+Backend .env:
+
+PORT=4000
+NODE_ENV=development
+DATABASE_URL=
+JWT_SECRET=
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:5173
+BACKEND_URL=http://localhost:4000
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+UPLOAD_PROVIDER=local
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+
+Frontend .env:
+
+VITE_API_URL=http://localhost:4000/api
+VITE_PUBLIC_APP_NAME=Orbit Assistant
+
+
+============================================================
+12. ROADMAP DE DESARROLLO
+============================================================
+
+FASE 1 - Maqueta premium cliente
+------------------------------------------------------------
+
+Objetivo:
+Tener experiencia visual móvil lista.
+
+Incluye:
+
+- Landing QR.
+- Producto.
+- Ficha.
+- Instalación.
+- Recomendados.
+- Chat simulado.
+- Detalle de recomendado.
+- Modo proyecto.
+
+Estado:
+Ya iniciada con maqueta HTML.
+
+
+FASE 2 - Frontend React cliente
+------------------------------------------------------------
+
+Objetivo:
+Pasar maqueta a estructura real.
+
+Incluye:
+
+- React + Vite.
+- Rutas públicas.
+- Componentes reutilizables.
+- Datos mock.
+- Navegación real.
+
+
+FASE 3 - Backend base
+------------------------------------------------------------
+
+Objetivo:
+Crear API funcional.
+
+Incluye:
+
+- Express.
+- PostgreSQL.
+- Productos.
+- Categorías.
+- Recomendaciones.
+- QR.
+- Escaneos.
+- Multimedia básica.
+
+
+FASE 4 - Admin básico
+------------------------------------------------------------
+
+Objetivo:
+Administrar productos.
+
+Incluye:
+
+- Login.
+- Dashboard.
+- Crear productos.
+- Editar productos.
+- Subir imágenes.
+- Crear ficha técnica.
+- Crear recomendados.
+- Generar QR.
+
+
+FASE 5 - Multimedia e instalación
+------------------------------------------------------------
+
+Objetivo:
+Contenido visual real.
+
+Incluye:
+
+- Videos.
+- Guías.
+- Paso a paso.
+- Galería.
+- Manuales.
+
+
+FASE 6 - IA real
+------------------------------------------------------------
+
+Objetivo:
+Conectar Orbit Assistant a IA.
+
+Incluye:
+
+- OpenAI API.
+- Prompt por producto.
+- Base de conocimiento.
+- Registro de preguntas.
+- Recomendaciones inteligentes.
+
+
+FASE 7 - Analíticas
+------------------------------------------------------------
+
+Objetivo:
+Mostrar valor comercial.
+
+Incluye:
+
+- Escaneos.
+- Productos más vistos.
+- Recomendados más clickeados.
+- Preguntas frecuentes.
+- Reportes.
+
+
+FASE 8 - Versión venta / presentación
+------------------------------------------------------------
+
+Objetivo:
+Presentar a la jefa como producto premium.
+
+Incluye:
+
+- Demo con 20 productos.
+- Panel administrador.
+- QR reales.
+- Datos simulados de analítica.
+- Chat funcional.
+- Guía visual.
+- Propuesta comercial.
+
+
+============================================================
+13. CRITERIOS PARA DECIR QUE EL PRODUCTO ESTÁ COMPLETO
+============================================================
+
+La versión completa debe permitir:
+
+- Crear productos desde admin.
+- Mostrar producto público desde QR.
+- Generar QR real.
+- Registrar escaneo.
+- Mostrar ficha técnica.
+- Mostrar imágenes.
+- Mostrar video o guía de instalación.
+- Mostrar productos compatibles.
+- Clic en recomendados para ir al detalle.
+- Chat con Orbit Assistant.
+- Recomendaciones cruzadas.
+- Modo proyecto.
+- Panel con métricas.
+- Gestión de categorías.
+- Gestión de multimedia.
+- Gestión de usuarios admin.
+- Base de conocimiento para IA.
+- Deploy frontend.
+- Deploy backend.
+- Base de datos PostgreSQL.
+- Documentación básica.
+
+
+============================================================
+14. IMPORTANTE PARA EL DESARROLLO CON CHATGPT
+============================================================
+
+Reglas de trabajo:
+
+- No romper lo que ya funciona.
+- No minimizar código sin pedirlo.
+- Mantener archivos separados.
+- Pasar archivos completos.
+- Usar nombres claros.
+- Todo en español para la interfaz.
+- Mantener diseño mobile-first.
+- Primero cliente, luego admin.
+- Backend real, no localStorage.
+- localStorage solo puede usarse para sesión temporal si es necesario.
+- Los productos deben venir de backend.
+- Las recomendaciones deben venir de backend.
+- El chat debe pasar por backend.
+- Los QR deben ser generados y guardados.
+- La estructura debe escalar a 2.000 productos.
+- Cada cambio debe indicar qué archivo se toca.
+- Antes de editar, revisar estructura existente.
+- Después de editar, verificar navegación.
+
+
+============================================================
+15. PRIMEROS PRODUCTOS DEMO SUGERIDOS
+============================================================
+
+Para demo inicial:
+
+1. Aspersor Pop-Up Orbit ajustable.
+2. Boquilla ajustable Orbit.
+3. Programador digital Orbit.
+4. Conector 1/4".
+5. Tubería de riego.
+6. Filtro de riego.
+7. Llave de paso.
+8. Kit de riego por goteo.
+9. Sensor de lluvia.
+10. Electroválvula.
+
+Relaciones iniciales:
+
+Aspersor recomienda:
+
+- Boquilla.
+- Conector.
+- Tubería.
+- Programador.
+- Filtro.
+
+Boquilla recomienda:
+
+- Aspersor.
+- Conector.
+- Programador.
+
+Programador recomienda:
+
+- Aspersores.
+- Electroválvula.
+- Sensor de lluvia.
+- Filtro.
+
+Kit goteo recomienda:
+
+- Programador.
+- Filtro.
+- Conectores.
+- Tubería.
+
+
+============================================================
+16. PROPUESTA DE VALOR PARA VENDER A LA JEFA
+============================================================
+
+Orbit Assistant no es solamente una página con QR.
+
+Es un asesor digital de productos que:
+
+- Reduce dudas del cliente en tienda.
+- Explica productos técnicos de forma simple.
+- Ayuda a instalar correctamente.
+- Aumenta ventas cruzadas.
+- Recomienda accesorios compatibles.
+- Mejora la experiencia del cliente en retail.
+- Entrega métricas reales de interés por producto.
+- Permite saber qué productos se escanean más.
+- Permite saber qué preguntas hacen los clientes.
+- Convierte cada empaque o góndola en un vendedor digital.
+- Escala a miles de productos.
+- Puede replicarse en varias tiendas y regiones.
+
+
+============================================================
+17. NOMBRE COMERCIAL SUGERIDO
+============================================================
+
+Nombre del producto:
+
+Orbit Assistant
+
+Subtítulo:
+
+Asesor digital inteligente para productos de riego.
+
+Frase comercial:
+
+"Convierte cada QR en un vendedor digital."
+
+Otra frase:
+
+"El cliente escanea, entiende, instala y compra mejor."
+
+Otra frase:
+
+"Ficha técnica, instalación, recomendaciones e IA en una sola experiencia."
+
+
+============================================================
+18. ENTREGABLE FINAL PREMIUM
+============================================================
+
+La entrega profesional debe incluir:
+
+- Código fuente frontend.
+- Código fuente backend.
+- Base de datos.
+- Panel administrador.
+- Vista cliente.
+- Generador QR.
+- Sistema de recomendaciones.
+- Sistema de multimedia.
+- Chat IA.
+- Manual de instalación.
+- Manual de uso admin.
+- Deploy en producción.
+- Dominio configurado.
+- 20 productos cargados.
+- QR demo impresos.
+- Presentación comercial.
+- Video demo de uso.
+
+
+FIN DEL MASTER

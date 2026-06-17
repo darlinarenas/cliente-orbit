@@ -1,0 +1,9 @@
+Estructura adaptada al ZIP del usuario:
+assets/
+css/
+js/
+orbit-backend/
+HTML sueltos para cliente y administrador.
+
+El contenido funcional sigue el MASTER_ORBIT_ASSISTANT:
+cliente QR sin login, panel admin con login, productos, QR, recomendaciones, compatibilidades, multimedia, guía, IA base, analíticas y leads.

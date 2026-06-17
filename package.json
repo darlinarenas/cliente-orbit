@@ -1,0 +1,8 @@
+{
+  "name": "orbit-assistant-html-classic",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "backend": "npm run dev --prefix orbit-backend"
+  }
+}
