@@ -1,4 +1,5 @@
 
+
 let CURRENT_PRODUCT = null;
 let CURRENT_QR = '';
 
@@ -34,7 +35,7 @@ function loadIndex() {
       <h1>Escanea, entiende e instala mejor</h1>
       <p>Orbit Assistant muestra ficha técnica, instalación, productos compatibles y recomendaciones sin iniciar sesión.</p>
       <img class="mascot" src="assets/mascot/orbito.jpeg" onerror="this.style.display='none'">
-      <button class="btn" onclick="location.href='qr.html?qr=ASP-POP-001'">Simular escaneo QR</button><br><br>
+      <button class="btn" onclick="openQRScanner()">📷 Escanear otro producto</button><br><br>
       <button class="btn light" onclick="location.href='proyecto.html'">Armar proyecto de riego</button>
     </div>
   </main><button class="mascot-float" onclick="location.href='qr.html?qr=ASP-POP-001'"><img src="assets/mascot/orbito.jpeg"></button>${bottomNav()}</div>`;
@@ -191,3 +192,9 @@ function projectResult(type) {
   if(type.includes('Ahorrar')) msg='Programador Orbit, boquillas eficientes, filtro y revisión de presión para evitar desperdicio.';
   document.getElementById('projectResult').innerHTML = `<h2>${type}</h2><p>${msg}</p><br><button class="btn" onclick="location.href='producto.html?slug=aspersor-popup-orbit-ajustable&qr=ASP-POP-001'">Ver producto recomendado</button>`;
 }
+
+
+function openQRScanner() {
+  location.href = 'qr.html';
+}
+
