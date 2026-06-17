@@ -1,5 +1,3 @@
-
-
 let CURRENT_PRODUCT = null;
 let CURRENT_QR = '';
 
@@ -197,4 +195,5 @@ function projectResult(type) {
 function openQRScanner() {
   location.href = 'qr.html';
 }
+
 

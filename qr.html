@@ -3,13 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orbit QR</title>
+<title>Escanear QR Orbit</title>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/cliente.css">
+<style>
+.scanner-box{
+  background:#fff;
+  border:1px solid rgba(0,79,159,.12);
+  border-radius:28px;
+  padding:16px;
+  box-shadow:0 14px 36px rgba(0,63,143,.10);
+  margin-bottom:14px;
+}
+#reader{
+  width:100%;
+  overflow:hidden;
+  border-radius:24px;
+  background:#061427;
+}
+.scan-help{
+  background:#eef8ff;
+  border:1px solid #d8ebff;
+  border-radius:22px;
+  padding:14px;
+  margin-top:12px;
+}
+.manual-box{
+  display:none;
+  margin-top:14px;
+}
+.manual-box.active{
+  display:block;
+}
+</style>
 </head>
 <body>
-<div id="app"></div><div class="toast"></div>
+<div id="app">
+  <div class="phone">
+    <header class="client-header">
+      <div class="brand">
+        <div class="logo">O</div>
+        <div><b>Orbit Assistant</b><br><span>Escáner de producto</span></div>
+      </div>
+      <span class="pill">Cámara QR</span>
+    </header>
+
+    <main class="screen">
+      <div class="hero">
+        <span class="pill">📷 Nuevo escaneo</span>
+        <h1>Escanear otro producto</h1>
+        <p>Apunta la cámara al QR del producto Orbit. No necesitas iniciar sesión.</p>
+        <img class="mascot" src="assets/mascot/orbito.jpeg" onerror="this.style.display='none'">
+      </div>
+
+      <section class="scanner-box">
+        <div id="reader"></div>
+
+        <div class="scan-help">
+          <b>Consejo</b>
+          <p>Permite el acceso a la cámara y acerca el QR hasta que se lea automáticamente.</p>
+        </div>
+
+        <button class="btn light" style="margin-top:12px" onclick="showManualInput()">
+          Escribir código manualmente
+        </button>
+
+        <div id="manualBox" class="manual-box">
+          <input id="manualQr" class="input" placeholder="Ejemplo: ASP-POP-001">
+          <button class="btn" onclick="goManualQR()">Abrir producto</button>
+        </div>
+      </section>
+
+      <button class="btn light" onclick="location.href='index.html'">Volver al inicio</button>
+    </main>
+  </div>
+</div>
+
+<div class="toast"></div>
+
 <script src="js/config.js"></script>
-<script src="js/cliente.js"></script><script>loadQRPage()</script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+let scannerStarted = false;
+let scannerInstance = null;
+
+function getQrParam() {
+  return new URLSearchParams(window.location.search).get('qr');
+}
+
+function normalizeScannedQR(text) {
+  const value = String(text || '').trim();
+
+  try {
+    const url = new URL(value);
+    const qr = url.searchParams.get('qr');
+    if (qr) return qr;
+  } catch(e) {}
+
+  if (value.includes('qr=')) {
+    const query = value.split('?')[1] || value;
+    const qr = new URLSearchParams(query).get('qr');
+    if (qr) return qr;
+  }
+
+  return value;
+}
+
+async function openProductFromQR(qrCode) {
+  const cleanCode = normalizeScannedQR(qrCode);
+
+  if (!cleanCode) {
+    toast('QR no válido');
+    return;
+  }
+
+  try {
+    await api(`/qr/${encodeURIComponent(cleanCode)}/scan`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+
+    const data = await api(`/qr/${encodeURIComponent(cleanCode)}`);
+
+    if (!data.product || !data.product.slug) {
+      toast('No se encontró producto asociado');
+      return;
+    }
+
+    location.href = `producto.html?slug=${encodeURIComponent(data.product.slug)}&qr=${encodeURIComponent(cleanCode)}`;
+  } catch(e) {
+    toast('No se pudo abrir el producto. Revisa si el QR existe.');
+  }
+}
+
+async function startScanner() {
+  if (!window.Html5Qrcode) {
+    toast('No se pudo cargar el lector QR');
+    return;
+  }
+
+  if (scannerStarted) return;
+  scannerStarted = true;
+
+  scannerInstance = new Html5Qrcode('reader');
+
+  try {
+    await scannerInstance.start(
+      { facingMode: 'environment' },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 250 }
+      },
+      async (decodedText) => {
+        try {
+          await scannerInstance.stop();
+        } catch(e) {}
+
+        openProductFromQR(decodedText);
+      },
+      () => {}
+    );
+  } catch(e) {
+    scannerStarted = false;
+    toast('No se pudo abrir la cámara. Revisa permisos del navegador.');
+    showManualInput();
+  }
+}
+
+function showManualInput() {
+  document.getElementById('manualBox').classList.add('active');
+}
+
+function goManualQR() {
+  const value = document.getElementById('manualQr').value.trim();
+  openProductFromQR(value);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const qr = getQrParam();
+
+  if (qr) {
+    openProductFromQR(qr);
+  } else {
+    startScanner();
+  }
+});
+</script>
 </body>
 </html>
