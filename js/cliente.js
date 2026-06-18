@@ -36,7 +36,7 @@ function loadIndex() {
       <button class="btn" onclick="openQRScanner()">📷 Escanear otro producto</button><br><br>
       <button class="btn light" onclick="location.href='proyecto.html'">Armar proyecto de riego</button>
     </div>
-  </main><button class="mascot-float" onclick="location.href='qr.html?qr=ASP-POP-001'"><img src="assets/mascot/orbito.jpeg"></button>${bottomNav()}</div>`;
+  </main><button class="mascot-float" onclick="location.href='qr.html?scan=1'"><img src="assets/mascot/orbito.jpeg"></button>${bottomNav()}</div>`;
   setActiveNav('inicio');
 }
 async function loadQRPage() {
@@ -56,15 +56,80 @@ async function loadProductPage() {
   app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>Cargando...</h1><p>Buscando producto Orbit.</p></div></main>${bottomNav()}</div>`;
 
   const p = await safeApi(`/public/product/${slug}`, {product: DEMO_PRODUCT_OFFLINE});
-  const r = await safeApi(`/public/product/${slug}/recommendations`, {recommendations: DEMO_RECOMMENDATIONS_OFFLINE});
-  const g = await safeApi(`/public/product/${slug}/installation`, {guide: DEMO_GUIDE_OFFLINE});
+  const r = await safeApi(`/public/product/${slug}/recommendations`, {recommendations: []});
+  const g = await safeApi(`/public/product/${slug}/installation`, {guide: {title:'',description:'',main_video_url:'',steps:[]}});
 
-  renderProduct(p.product, r.recommendations, g.guide);
+  renderProduct(p.product, r.recommendations || [], g.guide || {title:'',description:'',main_video_url:'',steps:[]});
 }
 function productVisual(product) {
   if (product.main_image_url) return `<img class="product-img" src="${product.main_image_url}">`;
   return `<div class="water"></div><div class="sprinkler"></div>`;
 }
+
+function renderExtraProductInfo(product) {
+  const rows = [
+    ['Dificultad de instalación', product.difficulty_level],
+    ['Uso recomendado', product.usage_type],
+    ['Video instalación', product.installation_video_url],
+    ['Manual PDF', product.manual_pdf_url]
+  ].filter(x => x[1]);
+
+  if (!rows.length && !product.long_description) return '';
+
+  return `<section class="card">
+    <h2>Información del producto</h2>
+    ${product.long_description ? `<p>${escapeHTML(product.long_description)}</p>` : ''}
+    ${rows.map(([label,value]) => `<div style="display:flex;justify-content:space-between;border-bottom:1px solid #edf5ff;padding:12px 0;gap:10px"><span>${escapeHTML(label)}</span><b>${String(value).startsWith('http') ? `<a href="${escapeHTML(value)}" target="_blank">Abrir</a>` : escapeHTML(value)}</b></div>`).join('')}
+  </section>`;
+}
+
+function renderFichaTecnica(product) {
+  const specs = product.specs || [];
+  if (!specs.length) {
+    return `<section id="ficha" class="card">
+      <h2>Ficha técnica</h2>
+      <p>Este producto todavía no tiene datos técnicos cargados desde el panel administrador.</p>
+    </section>`;
+  }
+
+  return `<section id="ficha" class="card">
+    <h2>Ficha técnica</h2>
+    ${specs.map(s=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #edf5ff;padding:12px 0;gap:10px"><span>${escapeHTML(s.spec_label)}</span><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('')}
+  </section>`;
+}
+
+function renderInstallationGuide(guide) {
+  const hasGuide = guide && (guide.title || guide.description || guide.main_video_url || (guide.steps || []).length);
+  if (!hasGuide) {
+    return `<section id="instalacion" class="card">
+      <h2>Guía de instalación</h2>
+      <p>Este producto todavía no tiene guía de instalación cargada desde el panel administrador.</p>
+    </section>`;
+  }
+
+  return `<section id="instalacion" class="card">
+    <h2>${escapeHTML(guide.title || 'Guía de instalación')}</h2>
+    ${guide.description ? `<p>${escapeHTML(guide.description)}</p>` : ''}
+    ${guide.main_video_url ? `<div class="card" style="margin-top:12px;background:#eef8ff"><b>▶ Video de instalación</b><p><a href="${escapeHTML(guide.main_video_url)}" target="_blank">Abrir video</a></p></div>` : ''}
+    ${(guide.steps||[]).map(st=>`<div class="product-row"><div class="thumb">${st.step_number}</div><div><b>${escapeHTML(st.title || '')}</b><br><small>${escapeHTML(st.description || '')}</small>${st.media_url ? `<br><small><a href="${escapeHTML(st.media_url)}" target="_blank">Ver recurso</a></small>` : ''}</div></div>`).join('')}
+  </section>`;
+}
+
+function renderRecommendations(recommendations, slug) {
+  if (!recommendations.length) {
+    return `<section id="recomendados" class="bundle">
+      <h2>Completa tu instalación</h2>
+      <p>Este producto todavía no tiene productos recomendados cargados desde el panel administrador.</p>
+    </section>`;
+  }
+
+  return `<section id="recomendados" class="bundle">
+    <h2>Completa tu instalación</h2>
+    <p>Productos recomendados para evitar compras incompletas y aumentar ventas cruzadas.</p>
+    ${recommendations.map(x=>`<a class="product-row" href="detalle-producto.html?slug=${encodeURIComponent(x.slug || '')}&from=${encodeURIComponent(slug)}"><div class="thumb">${x.main_image_url ? `<img src="${escapeHTML(x.main_image_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">` : '💧'}</div><div><b>${escapeHTML(x.name)}</b><br><small>${escapeHTML(x.quantity ? 'Cantidad: ' + x.quantity + ' · ' : '')}${escapeHTML(x.reason||x.short_description||'Producto compatible')}</small></div><span class="badge">${escapeHTML(x.recommendation_type||'Compatible')}</span></a>`).join('')}
+  </section>`;
+}
+
 function renderProduct(product, recommendations, guide) {
   CURRENT_PRODUCT = product;
   const slug = product.slug;
@@ -86,23 +151,10 @@ function renderProduct(product, recommendations, guide) {
         <div class="specs">${(product.specs||[]).slice(0,4).map(s=>`<div class="spec"><small>${escapeHTML(s.spec_label)}</small><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('')}</div>
       </section>
 
-      <section id="ficha" class="card">
-        <h2>Ficha técnica</h2>
-        ${(product.specs||[]).map(s=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #edf5ff;padding:12px 0;gap:10px"><span>${escapeHTML(s.spec_label)}</span><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('')}
-      </section>
-
-      <section id="instalacion" class="card">
-        <h2>${escapeHTML(guide.title || 'Guía de instalación')}</h2>
-        <p>${escapeHTML(guide.description || '')}</p>
-        <div class="card" style="margin-top:12px;background:#eef8ff"><b>▶ Video / video-fotos de instalación</b><p>Espacio listo para video MP4, YouTube o carrusel de fotos.</p></div>
-        ${(guide.steps||[]).map(st=>`<div class="product-row"><div class="thumb">${st.step_number}</div><div><b>${escapeHTML(st.title)}</b><br><small>${escapeHTML(st.description)}</small></div></div>`).join('')}
-      </section>
-
-      <section id="recomendados" class="bundle">
-        <h2>Completa tu instalación</h2>
-        <p>Productos recomendados para evitar compras incompletas y aumentar ventas cruzadas.</p>
-        ${recommendations.map(x=>`<a class="product-row" href="detalle-producto.html?slug=${encodeURIComponent(x.slug)}&from=${encodeURIComponent(slug)}"><div class="thumb">${x.icon||'💧'}</div><div><b>${escapeHTML(x.name)}</b><br><small>${escapeHTML(x.reason||x.short_description||'Producto compatible')}</small></div><span class="badge">${escapeHTML(x.recommendation_type||'Compatible')}</span></a>`).join('')}
-      </section>
+      ${renderExtraProductInfo(product)}
+      ${renderFichaTecnica(product)}
+      ${renderInstallationGuide(guide)}
+      ${renderRecommendations(recommendations, slug)}
 
       ${leadBox(slug, CURRENT_QR, 'ficha_producto')}
       ${chatBox(slug)}
@@ -193,7 +245,7 @@ function projectResult(type) {
 
 
 function openQRScanner() {
-  location.href = 'qr.html';
+  location.href = 'qr.html?scan=1';
 }
 
 
