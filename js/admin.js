@@ -167,3 +167,4 @@ async function loadSettingsAdmin(){requireAdmin();adminShell('Configuración',`<
 async function loadUsersAdmin(){requireAdmin();adminShell('Usuarios',`<h1>Usuarios admin</h1><div class="card"><table class="table"><tr><td>admin@orbitassistant.cl</td><td>Super Admin</td><td>Activo</td></tr></table></div>`)}
 
 window.addEventListener('unhandledrejection', function(e){console.warn(e.reason);toast(e.reason?.message || 'Error no controlado');});
+
