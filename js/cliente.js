@@ -40,13 +40,19 @@ function loadIndex() {
   setActiveNav('inicio');
 }
 async function loadQRPage() {
-  const qr = getParam('qr') || 'ASP-POP-001';
+  const qr = getParam('qr');
+  const app = document.getElementById('app');
+  if (!qr) {
+    app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>QR no recibido</h1><p>Falta el código QR en la URL.</p></div></main>${bottomNav()}</div>`;
+    return;
+  }
   try {
     await api(`/qr/${encodeURIComponent(qr)}/scan`, {method:'POST', body:JSON.stringify({})});
     const data = await api(`/qr/${encodeURIComponent(qr)}`);
+    if (!data.product || !data.product.slug) throw new Error('QR sin producto asociado');
     location.href = `producto.html?slug=${encodeURIComponent(data.product.slug)}&qr=${encodeURIComponent(qr)}`;
   } catch(e) {
-    location.href = `producto.html?slug=aspersor-popup-orbit-ajustable&qr=${encodeURIComponent(qr)}`;
+    app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>QR no encontrado</h1><p>${escapeHTML(e.message || 'Este QR no existe en la base de datos.')}</p><p>Debes generar el QR desde el administrador y verificar que aparezca en Supabase tabla qrs.</p></div></main>${bottomNav()}</div>`;
   }
 }
 async function loadProductPage() {
@@ -60,8 +66,8 @@ async function loadProductPage() {
     const r = await api(`/public/product/${slug}/recommendations`);
     const g = await api(`/public/product/${slug}/installation`);
     renderProduct(p.product, r.recommendations, g.guide);
-  } catch (e) {
-    app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>Error de conexión</h1><p>${escapeHTML(e.message || 'No se pudo cargar el producto desde la base de datos.')}</p><p>Revisa Render, Supabase y DATABASE_URL.</p></div></main>${bottomNav()}</div>`;
+  } catch(e) {
+    app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>Producto no encontrado</h1><p>${escapeHTML(e.message || 'No existe en la base de datos.')}</p><p>El producto debe estar guardado en Supabase/PostgreSQL.</p></div></main>${bottomNav()}</div>`;
   }
 }
 function productVisual(product) {
@@ -168,7 +174,8 @@ async function sendLead(productSlug, qrCode, source) {
     await api('/public/leads', { method:'POST', body: JSON.stringify({ email, name, productSlug, qrCode, source, acceptsMarketing }) });
     toast('Correo registrado correctamente');
   } catch(e) {
-    toast('Demo: correo capturado visualmente. Enciende backend para guardarlo real.');
+    toast(e.message || 'No se pudo guardar en base de datos');
+    return;
   }
   document.getElementById('leadEmail').value='';
   document.getElementById('leadName').value='';

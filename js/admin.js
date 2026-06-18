@@ -150,11 +150,16 @@ async function loadQRAdmin(){
   const data = await api('/admin/qr');
   adminShell('QRs', `<div class="admin-top"><h1>Biblioteca de QR</h1><button class="btn small" onclick="generateQR()">Generar QR demo</button></div>
     <div class="card"><p>Cada QR queda asociado a SKU, producto y ficha pública. Desde aquí puedes probarlo, copiar URL y descargarlo para etiqueta.</p><table class="table"><thead><tr><th>QR</th><th>SKU</th><th>Producto</th><th>Vista</th><th>QR guardado</th><th>Acciones</th></tr></thead><tbody>
-    ${data.qrs.map(q=>`<tr><td>${escapeHTML(q.qr_code)}</td><td>${escapeHTML(q.product_sku||'')}</td><td>${escapeHTML(q.product_name||'')}</td><td><a href="qr.html?qr=${encodeURIComponent(q.qr_code)}" target="_blank">Abrir ficha</a></td><td>${q.qr_image_url ? `<img class="admin-preview" src="${q.qr_image_url}">` : 'Pendiente'}</td><td class="actions"><button class="btn light" onclick="copyQRUrl('${q.qr_code}')">Copiar URL</button><button class="btn light" onclick="downloadQR(${q.id}, 'png', '${q.qr_code}')">PNG</button><button class="btn light" onclick="downloadQR(${q.id}, 'svg', '${q.qr_code}')">SVG</button><button class="btn light" onclick="downloadQR(${q.id}, 'pdf', '${q.qr_code}')">PDF</button></td></tr>`).join('')}
+    ${data.qrs.map(q=>`<tr><td>${escapeHTML(q.qr_code)}</td><td>${escapeHTML(q.product_sku||'')}</td><td>${escapeHTML(q.product_name||'')}</td><td><a href="${escapeHTML(q.qr_url || ('qr.html?qr=' + encodeURIComponent(q.qr_code)))}" target="_blank">Abrir ficha</a></td><td>${q.qr_image_url ? `<img class="admin-preview" src="${q.qr_image_url}">` : 'Pendiente'}</td><td class="actions"><button class="btn light" onclick="copyQRUrl('${q.qr_code}')">Copiar URL</button><button class="btn light" onclick="downloadQR(${q.id}, 'png', '${q.qr_code}')">PNG</button><button class="btn light" onclick="downloadQR(${q.id}, 'svg', '${q.qr_code}')">SVG</button><button class="btn light" onclick="downloadQR(${q.id}, 'pdf', '${q.qr_code}')">PDF</button></td></tr>`).join('')}
     </tbody></table></div>`);
 }
 
-async function generateQR(productId=1){await api('/admin/qr/generate',{method:'POST',body:JSON.stringify({productId})});toast('QR generado y guardado');loadQRAdmin();}
+async function generateQR(productId){
+  if(!productId) return toast('Selecciona un producto para generar QR.');
+  await api('/admin/qr/generate',{method:'POST',body:JSON.stringify({productId})});
+  toast('QR generado y guardado en base de datos');
+  loadQRAdmin();
+}
 
 function copyQRUrl(qrCode){const url=`${location.origin}/qr.html?qr=${encodeURIComponent(qrCode)}`;navigator.clipboard.writeText(url);toast('URL copiada');}
 
