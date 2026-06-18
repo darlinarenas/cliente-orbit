@@ -65,9 +65,41 @@ function productVisual(product) {
   if (product.main_image_url) return `<img class="product-img" src="${product.main_image_url}">`;
   return `<div class="water"></div><div class="sprinkler"></div>`;
 }
-function renderProduct(product, recommendations, guide) {
+function clientSpecs(product) {
+  const existing = Array.isArray(product.specs) ? product.specs.filter(s => s && s.spec_value) : [];
+  if (existing.length) return existing;
+  return [
+    { spec_key:'alcance', spec_label:'Alcance', spec_value:product.alcance || '', spec_unit:product.alcance_unit || '' },
+    { spec_key:'presion', spec_label:'Presión', spec_value:product.presion || '', spec_unit:product.presion_unit || '' },
+    { spec_key:'uso', spec_label:'Uso', spec_value:product.uso || product.usage_type || '', spec_unit:'' },
+    { spec_key:'conexion', spec_label:'Conexión', spec_value:product.conexion || '', spec_unit:product.conexion_unit || '' }
+  ].filter(s => s.spec_value);
+}
+function clientGuide(product, guide) {
+  const g = guide && typeof guide === 'object' ? guide : {};
+  return {
+    title: g.title || 'Guía de instalación',
+    description: g.description || product.installation_description || 'Revisa el video y completa la instalación con productos compatibles.',
+    main_video_url: g.main_video_url || product.installation_video_url || '',
+    manual_pdf_url: product.manual_pdf_url || '',
+    steps: Array.isArray(g.steps) && g.steps.length ? g.steps : [
+      {step_number:1,title:'Revisa ficha técnica',description:'Valida alcance, presión, uso y conexión antes de instalar.'},
+      {step_number:2,title:'Prepara accesorios',description:'Ten a mano boquilla, conector, tubería, filtro y programador si aplica.'},
+      {step_number:3,title:'Instala y prueba',description:'Conecta el producto, abre el agua y ajusta cobertura/presión.'}
+    ]
+  };
+}
+function recommendationHref(x, slug) {
+  if (x.is_generated) return '#recomendados';
+  return `detalle-producto.html?slug=${encodeURIComponent(x.slug)}&from=${encodeURIComponent(slug)}`;
+}
+function renderProduct(product, recommendations = [], guide = {}) {
   CURRENT_PRODUCT = product;
   const slug = product.slug;
+  const specs = clientSpecs(product);
+  const finalGuide = clientGuide(product, guide);
+  const recommended = Array.isArray(recommendations) ? recommendations : [];
+
   document.getElementById('app').innerHTML = `<div class="phone">
     ${clientHeader()}
     <main class="screen">
@@ -81,27 +113,29 @@ function renderProduct(product, recommendations, guide) {
       <section id="producto" class="card">
         <div class="product-stage">${productVisual(product)}</div>
         <span class="pill">💧 ${escapeHTML(product.category_name || 'Producto Orbit')}</span>
-        <h1>${escapeHTML(product.name)}</h1>
-        <p>${escapeHTML(product.short_description || '')}</p>
-        <div class="specs">${(product.specs||[]).slice(0,4).map(s=>`<div class="spec"><small>${escapeHTML(s.spec_label)}</small><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('')}</div>
+        <h1>${escapeHTML(product.name || 'Producto Orbit')}</h1>
+        <p>${escapeHTML(product.short_description || product.long_description || '')}</p>
+        <div class="specs">${specs.slice(0,4).map(s=>`<div class="spec"><small>${escapeHTML(s.spec_label)}</small><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('')}</div>
       </section>
 
       <section id="ficha" class="card">
         <h2>Ficha técnica</h2>
-        ${(product.specs||[]).map(s=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #edf5ff;padding:12px 0;gap:10px"><span>${escapeHTML(s.spec_label)}</span><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('')}
+        ${specs.length ? specs.map(s=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #edf5ff;padding:12px 0;gap:10px"><span>${escapeHTML(s.spec_label)}</span><b>${escapeHTML(s.spec_value)} ${escapeHTML(s.spec_unit||'')}</b></div>`).join('') : '<p>Este producto todavía no tiene ficha técnica cargada.</p>'}
+        ${product.long_description ? `<div style="padding-top:12px"><b>Descripción ampliada</b><p>${escapeHTML(product.long_description)}</p></div>` : ''}
       </section>
 
       <section id="instalacion" class="card">
-        <h2>${escapeHTML(guide.title || 'Guía de instalación')}</h2>
-        <p>${escapeHTML(guide.description || '')}</p>
-        <div class="card" style="margin-top:12px;background:#eef8ff"><b>▶ Video / guía de instalación</b><p>${guide.main_video_url ? `<a class="btn light" href="${escapeHTML(guide.main_video_url)}" target="_blank" rel="noopener">Ver video de instalación</a>` : 'Este producto todavía no tiene video cargado.'}</p></div>
-        ${(guide.steps||[]).map(st=>`<div class="product-row"><div class="thumb">${st.step_number}</div><div><b>${escapeHTML(st.title)}</b><br><small>${escapeHTML(st.description)}</small></div></div>`).join('')}
+        <h2>${escapeHTML(finalGuide.title)}</h2>
+        <p>${escapeHTML(finalGuide.description)}</p>
+        <div class="card" style="margin-top:12px;background:#eef8ff"><b>▶ Video / guía de instalación</b><p>${finalGuide.main_video_url ? `<a class="btn light" href="${escapeHTML(finalGuide.main_video_url)}" target="_blank" rel="noopener">Ver video de instalación</a>` : 'Este producto todavía no tiene video cargado.'}</p></div>
+        ${finalGuide.manual_pdf_url ? `<div class="card" style="margin-top:12px;background:#f7fbff"><b>📄 Manual PDF</b><p><a class="btn light" href="${escapeHTML(finalGuide.manual_pdf_url)}" target="_blank" rel="noopener">Abrir manual PDF</a></p></div>` : ''}
+        ${finalGuide.steps.map(st=>`<div class="product-row"><div class="thumb">${escapeHTML(st.step_number)}</div><div><b>${escapeHTML(st.title)}</b><br><small>${escapeHTML(st.description)}</small></div></div>`).join('')}
       </section>
 
       <section id="recomendados" class="bundle">
         <h2>Completa tu instalación</h2>
         <p>Productos recomendados para evitar compras incompletas y aumentar ventas cruzadas.</p>
-        ${recommendations.map(x=>`<a class="product-row" href="detalle-producto.html?slug=${encodeURIComponent(x.slug)}&from=${encodeURIComponent(slug)}"><div class="thumb">${x.icon||'💧'}</div><div><b>${escapeHTML(x.name)}</b><br><small>${escapeHTML(x.reason||x.short_description||'Producto compatible')}</small></div><span class="badge">${escapeHTML(x.recommendation_type||'Compatible')}</span></a>`).join('')}
+        ${recommended.length ? recommended.map(x=>`<a class="product-row" href="${recommendationHref(x, slug)}"><div class="thumb">${x.icon||'💧'}</div><div><b>${escapeHTML(x.name)}</b><br><small>${escapeHTML(x.reason||x.short_description||'Producto compatible')}</small></div><span class="badge">${escapeHTML(x.recommendation_type||'Compatible')}</span></a>`).join('') : '<p>Todavía no hay productos recomendados para este producto.</p>'}
       </section>
 
       ${leadBox(slug, CURRENT_QR, 'ficha_producto')}
