@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "backend": "npm run dev --prefix orbit-backend"
+    "backend": "npm run dev --prefix orbit-backend",
+    "start": "npm start --prefix orbit-backend",
+    "build": "npm install --prefix orbit-backend"
   }
 }

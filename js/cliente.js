@@ -55,11 +55,14 @@ async function loadProductPage() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>Cargando...</h1><p>Buscando producto Orbit.</p></div></main>${bottomNav()}</div>`;
 
-  const p = await safeApi(`/public/product/${slug}`, {product: DEMO_PRODUCT_OFFLINE});
-  const r = await safeApi(`/public/product/${slug}/recommendations`, {recommendations: DEMO_RECOMMENDATIONS_OFFLINE});
-  const g = await safeApi(`/public/product/${slug}/installation`, {guide: DEMO_GUIDE_OFFLINE});
-
-  renderProduct(p.product, r.recommendations, g.guide);
+  try {
+    const p = await api(`/public/product/${slug}`);
+    const r = await api(`/public/product/${slug}/recommendations`);
+    const g = await api(`/public/product/${slug}/installation`);
+    renderProduct(p.product, r.recommendations, g.guide);
+  } catch (e) {
+    app.innerHTML = `<div class="phone">${clientHeader()}<main class="screen"><div class="card"><h1>Error de conexión</h1><p>${escapeHTML(e.message || 'No se pudo cargar el producto desde la base de datos.')}</p><p>Revisa Render, Supabase y DATABASE_URL.</p></div></main>${bottomNav()}</div>`;
+  }
 }
 function productVisual(product) {
   if (product.main_image_url) return `<img class="product-img" src="${product.main_image_url}">`;
