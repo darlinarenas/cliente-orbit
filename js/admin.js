@@ -63,7 +63,7 @@ async function loadProductsAdmin(){
 }
 
 async function showProductForm(id=null){
-  let p = {sku:'',name:'',slug:'',category_name:'Aspersores',short_description:'',long_description:'',main_image_url:'',difficulty_level:'',usage_type:'',installation_video_url:'',manual_pdf_url:'',is_active:true};
+  let p = {sku:'',name:'',slug:'',category_name:'Aspersores',short_description:'',long_description:'',main_image_url:'',difficulty_level:'',usage_type:'',installation_video_url:'',manual_pdf_url:'',alcance:'',alcance_unit:'m',presion:'',presion_unit:'PSI',uso:'',conexion:'',conexion_unit:'',installation_description:'',is_active:true};
   if(id){ const data = await api('/admin/products/'+id); p={...p,...data.product}; }
 
   document.getElementById('productForm').innerHTML = `<form class="card" onsubmit="saveProduct(event, ${id||'null'})" enctype="multipart/form-data">
@@ -75,14 +75,22 @@ async function showProductForm(id=null){
       <label>Categoría<input class="input" id="productCategory" value="${escapeHTML(p.category_name||'')}"></label>
       <label>Imagen principal del producto<input class="input" id="productMainImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
       <label>Estado<select class="input" id="productActive"><option value="true" ${p.is_active!==false?'selected':''}>Activo</option><option value="false" ${p.is_active===false?'selected':''}>Inactivo</option></select></label>
+      <label>Alcance<input class="input" id="productAlcance" value="${escapeHTML(p.alcance || (p.specs||[]).find(s=>s.spec_key==='alcance')?.spec_value || '')}" placeholder="Ej: 0,1 - 4,5"></label>
+      <label>Unidad alcance<input class="input" id="productAlcanceUnit" value="${escapeHTML(p.alcance_unit || (p.specs||[]).find(s=>s.spec_key==='alcance')?.spec_unit || 'm')}" placeholder="m"></label>
+      <label>Presión<input class="input" id="productPresion" value="${escapeHTML(p.presion || (p.specs||[]).find(s=>s.spec_key==='presion')?.spec_value || '')}" placeholder="Ej: 20 - 50"></label>
+      <label>Unidad presión<input class="input" id="productPresionUnit" value="${escapeHTML(p.presion_unit || (p.specs||[]).find(s=>s.spec_key==='presion')?.spec_unit || 'PSI')}" placeholder="PSI"></label>
+      <label>Uso<input class="input" id="productUso" value="${escapeHTML(p.uso || p.usage_type || (p.specs||[]).find(s=>s.spec_key==='uso')?.spec_value || '')}" placeholder="Césped, jardín, maceteros..."></label>
+      <label>Conexión<input class="input" id="productConexion" value="${escapeHTML(p.conexion || (p.specs||[]).find(s=>s.spec_key==='conexion')?.spec_value || '')}" placeholder="Ej: 1/4"></label>
+      <label>Unidad conexión<input class="input" id="productConexionUnit" value="${escapeHTML(p.conexion_unit || (p.specs||[]).find(s=>s.spec_key==='conexion')?.spec_unit || '')}" placeholder="pulg / mm"></label>
       <label>Dificultad<input class="input" id="productDifficulty" value="${escapeHTML(p.difficulty_level||'')}" placeholder="Básico / Medio / Avanzado"></label>
-      <label>Uso recomendado<input class="input" id="productUsage" value="${escapeHTML(p.usage_type||'')}" placeholder="Césped, jardín, maceteros..."></label>
-      <label>Video instalación<input class="input" id="productVideo" value="${escapeHTML(p.installation_video_url||'')}"></label>
+      <label>Video instalación<input class="input" id="productVideo" value="${escapeHTML(p.installation_video_url||'')}" placeholder="Link de YouTube, MP4 o guía visual"></label>
       <label>Manual PDF<input class="input" id="productManual" value="${escapeHTML(p.manual_pdf_url||'')}"></label>
     </div>
     ${p.main_image_url ? `<p><b>Foto actual:</b></p><img class="admin-preview" src="${p.main_image_url}">` : ''}
     <label>Descripción corta<textarea class="input" id="productShortDescription">${escapeHTML(p.short_description||'')}</textarea></label>
     <label>Descripción larga / ficha ampliada<textarea class="input" id="productLongDescription">${escapeHTML(p.long_description||'')}</textarea></label>
+    <label>Guía de instalación / instrucciones internas<textarea class="input" id="productInstallationDescription" placeholder="Ej: cortar tubería, instalar conector, regular boquilla, probar presión...">${escapeHTML(p.installation_description||p.installation_guide?.description||'')}</textarea></label>
+    <div class="card" style="background:#f7fbff"><b>Recomendaciones inteligentes</b><p>Al guardar, el backend buscará automáticamente productos relacionados ya creados: boquillas, conectores, tubería, programadores y filtros según el producto.</p></div>
     <div class="actions">
       <button class="btn small" data-action="save">Guardar producto</button>
       <button class="btn small light" data-action="save-generate-qr">Guardar + generar QR</button>
@@ -102,7 +110,15 @@ async function saveProduct(e,id){
   formData.append('short_description', document.getElementById('productShortDescription').value.trim());
   formData.append('long_description', document.getElementById('productLongDescription').value.trim());
   formData.append('difficulty_level', document.getElementById('productDifficulty').value.trim());
-  formData.append('usage_type', document.getElementById('productUsage').value.trim());
+  formData.append('alcance', document.getElementById('productAlcance').value.trim());
+  formData.append('alcance_unit', document.getElementById('productAlcanceUnit').value.trim());
+  formData.append('presion', document.getElementById('productPresion').value.trim());
+  formData.append('presion_unit', document.getElementById('productPresionUnit').value.trim());
+  formData.append('uso', document.getElementById('productUso').value.trim());
+  formData.append('usage_type', document.getElementById('productUso').value.trim());
+  formData.append('conexion', document.getElementById('productConexion').value.trim());
+  formData.append('conexion_unit', document.getElementById('productConexionUnit').value.trim());
+  formData.append('installation_description', document.getElementById('productInstallationDescription').value.trim());
   formData.append('installation_video_url', document.getElementById('productVideo').value.trim());
   formData.append('manual_pdf_url', document.getElementById('productManual').value.trim());
   formData.append('is_active', document.getElementById('productActive').value);

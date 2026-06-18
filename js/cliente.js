@@ -94,7 +94,7 @@ function renderProduct(product, recommendations, guide) {
       <section id="instalacion" class="card">
         <h2>${escapeHTML(guide.title || 'Guía de instalación')}</h2>
         <p>${escapeHTML(guide.description || '')}</p>
-        <div class="card" style="margin-top:12px;background:#eef8ff"><b>▶ Video / video-fotos de instalación</b><p>Espacio listo para video MP4, YouTube o carrusel de fotos.</p></div>
+        <div class="card" style="margin-top:12px;background:#eef8ff"><b>▶ Video / guía de instalación</b><p>${guide.main_video_url ? `<a class="btn light" href="${escapeHTML(guide.main_video_url)}" target="_blank" rel="noopener">Ver video de instalación</a>` : 'Este producto todavía no tiene video cargado.'}</p></div>
         ${(guide.steps||[]).map(st=>`<div class="product-row"><div class="thumb">${st.step_number}</div><div><b>${escapeHTML(st.title)}</b><br><small>${escapeHTML(st.description)}</small></div></div>`).join('')}
       </section>
 
