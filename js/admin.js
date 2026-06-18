@@ -1,4 +1,3 @@
-
 function adminShell(active, content) {
   const links = [
     ['panel-administrativo.html','Dashboard'],
