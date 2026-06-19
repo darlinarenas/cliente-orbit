@@ -37,11 +37,10 @@ function productPublicUrl(slug) {
 
 function escapeJS(value='') {
   return String(value)
-    .replace(/\/g, '\\')
-    .replace(/'/g, "\'")
-    .replace(/"/g, '\"')
-    .replace(/
-/g, ' ');
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\r?\n/g, ' ');
 }
 
 function qrFallbackImage(qrUrl, qrCode) {
