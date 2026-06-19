@@ -1,8 +1,8 @@
 {
-  "name": "orbit-assistant-html-classic",
+  "name": "cliente-orbit",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "echo Frontend static build OK"
+    "build": "echo Frontend listo"
   }
 }
