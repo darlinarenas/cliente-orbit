@@ -37,10 +37,16 @@ function productPublicUrl(slug) {
 
 function escapeJS(value='') {
   return String(value)
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, ' ')
-    .replace(/\r/g, ' ');
+    .replace(/\/g, '\\')
+    .replace(/'/g, "\'")
+    .replace(/"/g, '\"')
+    .replace(/
+/g, ' ');
+}
+
+function qrFallbackImage(qrUrl, qrCode) {
+  const publicUrl = qrUrl || `${location.origin}/qr.html?qr=${encodeURIComponent(qrCode)}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=${encodeURIComponent(publicUrl)}`;
 }
 
 async function loadDashboard(){
@@ -64,33 +70,27 @@ async function loadProductsAdmin(){
   requireAdmin();
   const data = await api('/admin/products');
   const products = data.products || [];
-
   adminShell('Productos', `<div class="admin-top"><h1>Productos</h1><button class="btn small" onclick="showProductForm()">Nuevo producto</button></div>
     <div id="productForm"></div>
-
     <div class="card" style="margin-bottom:12px">
-      <label>Buscar producto
-        <input class="input" id="productSearch" placeholder="Buscar por nombre, SKU o categoría..." oninput="filterProductsAdmin()">
-      </label>
-      <small id="productSearchCount">${products.length} producto(s)</small>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <input class="input" id="productSearch" placeholder="Buscar por nombre, SKU o categoría..." oninput="filterProductsAdmin()" style="max-width:520px">
+        <small id="productSearchCount">${products.length} producto(s)</small>
+      </div>
     </div>
-
     <div class="card"><table class="table"><thead><tr><th>Foto</th><th>SKU</th><th>Producto</th><th>Categoría</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
     ${products.map(p=>`<tr class="product-row" data-name="${escapeHTML((p.name||'').toLowerCase())}" data-sku="${escapeHTML((p.sku||'').toLowerCase())}" data-category="${escapeHTML((p.category_name||'').toLowerCase())}"><td>${imagePreview(p.main_image_url)}</td><td>${escapeHTML(p.sku||'')}</td><td>${escapeHTML(p.name||'')}</td><td>${escapeHTML(p.category_name||'')}</td><td><span class="badge">${p.is_active?'Activo':'Inactivo'}</span></td><td class="actions"><button class="btn small light" onclick="showProductForm(${p.id})">Editar</button><a class="btn small light" href="${productPublicUrl(p.slug)}" target="_blank">Ver ficha</a><button class="btn small light" onclick="generateQR(${p.id})">Crear QR</button><button class="btn small" style="background:#dc2626;color:white" onclick="openDeleteProductModal(${p.id}, '${escapeJS(p.name||'Producto sin nombre')}', '${escapeJS(p.sku||'')}')">Eliminar</button></td></tr>`).join('')}
     </tbody></table></div>
-
-    <div id="deleteProductModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:9999;align-items:center;justify-content:center;padding:18px">
-      <div class="card" style="max-width:460px;width:100%;background:white;box-shadow:0 24px 70px rgba(0,0,0,.35)">
+    <div id="deleteProductModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:20px">
+      <div style="background:white;border-radius:22px;max-width:460px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)">
         <h2 style="margin-top:0;color:#dc2626">Eliminar producto</h2>
         <p>¿Estás seguro de eliminar este producto?</p>
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin:12px 0">
-          <b id="deleteProductName"></b><br>
-          <small id="deleteProductSku"></small>
-        </div>
-        <p style="font-size:14px;color:#64748b">Esta acción eliminará el producto de Supabase y no se puede deshacer.</p>
+        <p style="font-weight:800" id="deleteProductName"></p>
+        <p style="color:#64748b" id="deleteProductSku"></p>
+        <p style="color:#dc2626;font-weight:700">Esta acción eliminará el producto de Supabase y no se puede deshacer.</p>
         <div class="actions" style="justify-content:flex-end">
-          <button class="btn small light" onclick="closeDeleteProductModal()">Cancelar</button>
-          <button class="btn small" style="background:#dc2626;color:white" onclick="deleteSelectedProduct()">Sí, eliminar</button>
+          <button class="btn small light" type="button" onclick="closeDeleteProductModal()">Cancelar</button>
+          <button class="btn small" style="background:#dc2626;color:white" type="button" onclick="deleteProductConfirmed()">Sí, eliminar</button>
         </div>
       </div>
     </div>`);
@@ -184,7 +184,12 @@ async function loadQRAdmin(){
   const data = await api('/admin/qr');
   adminShell('QRs', `<div class="admin-top"><h1>Biblioteca de QR</h1><button class="btn small" onclick="generateQR()">Generar QR demo</button></div>
     <div class="card"><p>Cada QR queda asociado a SKU, producto y ficha pública. Desde aquí puedes probarlo, copiar URL y descargarlo para etiqueta.</p><table class="table"><thead><tr><th>QR</th><th>SKU</th><th>Producto</th><th>Vista</th><th>QR guardado</th><th>Acciones</th></tr></thead><tbody>
-    ${data.qrs.map(q=>`<tr><td>${escapeHTML(q.qr_code)}</td><td>${escapeHTML(q.product_sku||'')}</td><td>${escapeHTML(q.product_name||'')}</td><td><a href="${escapeHTML(q.qr_url || ('qr.html?qr=' + encodeURIComponent(q.qr_code)))}" target="_blank">Abrir ficha</a></td><td>${q.qr_image_url ? `<img class="admin-preview" src="${q.qr_image_url}">` : 'Pendiente'}</td><td class="actions"><button class="btn light" onclick="copyQRUrl('${q.qr_code}')">Copiar URL</button><button class="btn light" onclick="downloadQR(${q.id}, 'png', '${q.qr_code}')">PNG</button><button class="btn light" onclick="downloadQR(${q.id}, 'svg', '${q.qr_code}')">SVG</button><button class="btn light" onclick="downloadQR(${q.id}, 'pdf', '${q.qr_code}')">PDF</button></td></tr>`).join('')}
+    ${data.qrs.map(q=>{
+      const qrUrl = q.qr_url || `${location.origin}/qr.html?qr=${encodeURIComponent(q.qr_code)}`;
+      const fallback = qrFallbackImage(qrUrl, q.qr_code);
+      const imgSrc = q.qr_image_url || fallback;
+      return `<tr><td>${escapeHTML(q.qr_code)}</td><td>${escapeHTML(q.product_sku||'')}</td><td>${escapeHTML(q.product_name||'')}</td><td><a href="${escapeHTML(qrUrl)}" target="_blank">Abrir ficha</a></td><td><img class="admin-preview" src="${escapeHTML(imgSrc)}" onerror="this.onerror=null;this.src='${escapeHTML(fallback)}'"></td><td class="actions"><button class="btn light" onclick="copyQRUrl('${escapeJS(q.qr_code)}')">Copiar URL</button><button class="btn light" onclick="downloadQR(${q.id}, 'png', '${escapeJS(q.qr_code)}')">PNG</button><button class="btn light" onclick="downloadQR(${q.id}, 'svg', '${escapeJS(q.qr_code)}')">SVG</button><button class="btn light" onclick="downloadQR(${q.id}, 'pdf', '${escapeJS(q.qr_code)}')">PDF</button></td></tr>`;
+    }).join('')}
     </tbody></table></div>`);
 }
 
@@ -226,21 +231,19 @@ let productToDelete = null;
 function filterProductsAdmin(){
   const input = document.getElementById('productSearch');
   const count = document.getElementById('productSearchCount');
-  if(!input) return;
-
-  const text = input.value.trim().toLowerCase();
+  const text = (input?.value || '').toLowerCase().trim();
   let visible = 0;
 
   document.querySelectorAll('.product-row').forEach(row=>{
     const name = row.dataset.name || '';
     const sku = row.dataset.sku || '';
     const category = row.dataset.category || '';
-    const show = !text || name.includes(text) || sku.includes(text) || category.includes(text);
-    row.style.display = show ? '' : 'none';
-    if(show) visible++;
+    const match = !text || name.includes(text) || sku.includes(text) || category.includes(text);
+    row.style.display = match ? '' : 'none';
+    if(match) visible++;
   });
 
-  if(count) count.textContent = `${visible} producto(s)`;
+  if(count) count.textContent = `${visible} producto(s) encontrado(s)`;
 }
 
 function openDeleteProductModal(id, name, sku){
@@ -256,11 +259,12 @@ function closeDeleteProductModal(){
   if(modal) modal.style.display = 'none';
 }
 
-async function deleteSelectedProduct(){
+async function deleteProductConfirmed(){
   if(!productToDelete?.id) return;
-  await api('/admin/products/' + productToDelete.id, { method:'DELETE' });
-  toast('Producto eliminado');
+  const id = productToDelete.id;
+  await api('/admin/products/' + id, { method:'DELETE' });
   closeDeleteProductModal();
+  toast('Producto eliminado');
   loadProductsAdmin();
 }
 
