@@ -35,6 +35,14 @@ function productPublicUrl(slug) {
   return `producto.html?slug=${encodeURIComponent(slug)}&qr=preview-admin`;
 }
 
+function escapeJS(value='') {
+  return String(value)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ');
+}
+
 async function loadDashboard(){
   requireAdmin();
   try {
@@ -55,11 +63,37 @@ async function loadDashboard(){
 async function loadProductsAdmin(){
   requireAdmin();
   const data = await api('/admin/products');
+  const products = data.products || [];
+
   adminShell('Productos', `<div class="admin-top"><h1>Productos</h1><button class="btn small" onclick="showProductForm()">Nuevo producto</button></div>
     <div id="productForm"></div>
+
+    <div class="card" style="margin-bottom:12px">
+      <label>Buscar producto
+        <input class="input" id="productSearch" placeholder="Buscar por nombre, SKU o categoría..." oninput="filterProductsAdmin()">
+      </label>
+      <small id="productSearchCount">${products.length} producto(s)</small>
+    </div>
+
     <div class="card"><table class="table"><thead><tr><th>Foto</th><th>SKU</th><th>Producto</th><th>Categoría</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
-    ${data.products.map(p=>`<tr><td>${imagePreview(p.main_image_url)}</td><td>${escapeHTML(p.sku||'')}</td><td>${escapeHTML(p.name||'')}</td><td>${escapeHTML(p.category_name||'')}</td><td><span class="badge">${p.is_active?'Activo':'Inactivo'}</span></td><td class="actions"><button class="btn small light" onclick="showProductForm(${p.id})">Editar</button><a class="btn small light" href="${productPublicUrl(p.slug)}" target="_blank">Ver ficha</a><button class="btn small light" onclick="generateQR(${p.id})">Crear QR</button></td></tr>`).join('')}
-    </tbody></table></div>`);
+    ${products.map(p=>`<tr class="product-row" data-name="${escapeHTML((p.name||'').toLowerCase())}" data-sku="${escapeHTML((p.sku||'').toLowerCase())}" data-category="${escapeHTML((p.category_name||'').toLowerCase())}"><td>${imagePreview(p.main_image_url)}</td><td>${escapeHTML(p.sku||'')}</td><td>${escapeHTML(p.name||'')}</td><td>${escapeHTML(p.category_name||'')}</td><td><span class="badge">${p.is_active?'Activo':'Inactivo'}</span></td><td class="actions"><button class="btn small light" onclick="showProductForm(${p.id})">Editar</button><a class="btn small light" href="${productPublicUrl(p.slug)}" target="_blank">Ver ficha</a><button class="btn small light" onclick="generateQR(${p.id})">Crear QR</button><button class="btn small" style="background:#dc2626;color:white" onclick="openDeleteProductModal(${p.id}, '${escapeJS(p.name||'Producto sin nombre')}', '${escapeJS(p.sku||'')}')">Eliminar</button></td></tr>`).join('')}
+    </tbody></table></div>
+
+    <div id="deleteProductModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:9999;align-items:center;justify-content:center;padding:18px">
+      <div class="card" style="max-width:460px;width:100%;background:white;box-shadow:0 24px 70px rgba(0,0,0,.35)">
+        <h2 style="margin-top:0;color:#dc2626">Eliminar producto</h2>
+        <p>¿Estás seguro de eliminar este producto?</p>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin:12px 0">
+          <b id="deleteProductName"></b><br>
+          <small id="deleteProductSku"></small>
+        </div>
+        <p style="font-size:14px;color:#64748b">Esta acción eliminará el producto de Supabase y no se puede deshacer.</p>
+        <div class="actions" style="justify-content:flex-end">
+          <button class="btn small light" onclick="closeDeleteProductModal()">Cancelar</button>
+          <button class="btn small" style="background:#dc2626;color:white" onclick="deleteSelectedProduct()">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>`);
 }
 
 async function showProductForm(id=null){
@@ -185,5 +219,49 @@ async function loadAnalyticsAdmin(){requireAdmin();const d=await api('/admin/ana
 async function loadKnowledgeAdmin(){requireAdmin();adminShell('Base IA',`<h1>Base de conocimiento IA</h1><div class="card"><p>Espacio para contenido técnico controlado que usará Orbit Assistant.</p><textarea class="input" placeholder="Reglas, fichas, restricciones..."></textarea><button class="btn">Guardar base</button></div>`)}
 async function loadSettingsAdmin(){requireAdmin();adminShell('Configuración',`<h1>Configuración</h1><div class="card"><label>Nombre del sistema<input class="input" value="Orbit Assistant"></label><label>Color principal<input class="input" value="#003f8f"></label><button class="btn">Guardar</button></div>`)}
 async function loadUsersAdmin(){requireAdmin();adminShell('Usuarios',`<h1>Usuarios admin</h1><div class="card"><table class="table"><tr><td>admin@orbitassistant.cl</td><td>Super Admin</td><td>Activo</td></tr></table></div>`)}
+
+
+let productToDelete = null;
+
+function filterProductsAdmin(){
+  const input = document.getElementById('productSearch');
+  const count = document.getElementById('productSearchCount');
+  if(!input) return;
+
+  const text = input.value.trim().toLowerCase();
+  let visible = 0;
+
+  document.querySelectorAll('.product-row').forEach(row=>{
+    const name = row.dataset.name || '';
+    const sku = row.dataset.sku || '';
+    const category = row.dataset.category || '';
+    const show = !text || name.includes(text) || sku.includes(text) || category.includes(text);
+    row.style.display = show ? '' : 'none';
+    if(show) visible++;
+  });
+
+  if(count) count.textContent = `${visible} producto(s)`;
+}
+
+function openDeleteProductModal(id, name, sku){
+  productToDelete = { id, name, sku };
+  document.getElementById('deleteProductName').textContent = name || 'Producto sin nombre';
+  document.getElementById('deleteProductSku').textContent = sku ? `SKU: ${sku}` : '';
+  document.getElementById('deleteProductModal').style.display = 'flex';
+}
+
+function closeDeleteProductModal(){
+  productToDelete = null;
+  const modal = document.getElementById('deleteProductModal');
+  if(modal) modal.style.display = 'none';
+}
+
+async function deleteSelectedProduct(){
+  if(!productToDelete?.id) return;
+  await api('/admin/products/' + productToDelete.id, { method:'DELETE' });
+  toast('Producto eliminado');
+  closeDeleteProductModal();
+  loadProductsAdmin();
+}
 
 window.addEventListener('unhandledrejection', function(e){console.warn(e.reason);toast(e.reason?.message || 'Error no controlado');});
