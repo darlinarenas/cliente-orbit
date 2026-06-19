@@ -67,8 +67,9 @@ async function loadDashboard(){
 
 async function loadProductsAdmin(){
   requireAdmin();
-  const data = await api('/admin/products');
+  const [data, qrData] = await Promise.all([api('/admin/products'),api('/admin/qr')]);
   const products = data.products || [];
+  const productsWithQr = new Set((qrData.qrs||[]).map(q=>q.product_id));
   adminShell('Productos', `<div class="admin-top"><h1>Productos</h1><button class="btn small" onclick="showProductForm()">Nuevo producto</button></div>
     <div id="productForm"></div>
     <div class="card" style="margin-bottom:12px">
@@ -78,7 +79,7 @@ async function loadProductsAdmin(){
       </div>
     </div>
     <div class="card"><table class="table"><thead><tr><th>Foto</th><th>SKU</th><th>Producto</th><th>Categoría</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
-    ${products.map(p=>`<tr class="product-row" data-name="${escapeHTML((p.name||'').toLowerCase())}" data-sku="${escapeHTML((p.sku||'').toLowerCase())}" data-category="${escapeHTML((p.category_name||'').toLowerCase())}"><td>${imagePreview(p.main_image_url)}</td><td>${escapeHTML(p.sku||'')}</td><td>${escapeHTML(p.name||'')}</td><td>${escapeHTML(p.category_name||'')}</td><td><span class="badge">${p.is_active?'Activo':'Inactivo'}</span></td><td class="actions"><button class="btn small light" onclick="showProductForm(${p.id})">Editar</button><a class="btn small light" href="${productPublicUrl(p.slug)}" target="_blank">Ver ficha</a><button class="btn small light" onclick="generateQR(${p.id})">Crear QR</button><button class="btn small" style="background:#dc2626;color:white" onclick="openDeleteProductModal(${p.id}, '${escapeJS(p.name||'Producto sin nombre')}', '${escapeJS(p.sku||'')}')">Eliminar</button></td></tr>`).join('')}
+    ${products.map(p=>`<tr class="product-row" data-name="${escapeHTML((p.name||'').toLowerCase())}" data-sku="${escapeHTML((p.sku||'').toLowerCase())}" data-category="${escapeHTML((p.category_name||'').toLowerCase())}"><td>${imagePreview(p.main_image_url)}</td><td>${escapeHTML(p.sku||'')}</td><td>${escapeHTML(p.name||'')}</td><td>${escapeHTML(p.category_name||'')}</td><td><span class="badge">${p.is_active?'Activo':'Inactivo'}</span></td><td class="actions"><button class="btn small light" onclick="showProductForm(${p.id})">Editar</button><a class="btn small light" href="${productPublicUrl(p.slug)}" target="_blank">Ver ficha</a>${productsWithQr.has(p.id)?`<span class="badge">✅ QR Creado</span>`:`<button class="btn small light" onclick="generateQR(${p.id})">Crear QR</button>`}<button class="btn small" style="background:#dc2626;color:white" onclick="openDeleteProductModal(${p.id}, '${escapeJS(p.name||'Producto sin nombre')}', '${escapeJS(p.sku||'')}')">Eliminar</button></td></tr>`).join('')}
     </tbody></table></div>
     <div id="deleteProductModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:20px">
       <div style="background:white;border-radius:22px;max-width:460px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)">
